@@ -380,6 +380,11 @@
 .ef-consent input{ margin-top:2px; accent-color:var(--burdeos); width:17px; height:17px; flex:none; }
 .ef-consent a{ color:var(--burdeos); text-decoration:underline; text-underline-offset:2px; }
 .ef-falta{ margin:12px 0 0; text-align:center; font-size:13px; color:var(--apagado); }
+/* Lo que falta para enviar el autodiagnóstico, marcado en burdeos */
+.ef-wiz .ef-falta{ color:var(--burdeos); font-weight:600; font-size:13.5px; }
+.ef-input[aria-invalid="true"]{ border-color:var(--burdeos); box-shadow:0 0 0 3px rgba(79,24,40,.1); }
+.ef-consent.is-falta{ color:var(--burdeos); }
+.ef-consent.is-falta input{ outline:2px solid var(--burdeos); outline-offset:2px; }
 .ef-error{ margin:14px 0 0; color:#B4232A; font-size:14px; text-align:center; }
 .ef-nota{ margin:16px 0 0; text-align:center; font-size:12px; color:var(--apagado); }
 

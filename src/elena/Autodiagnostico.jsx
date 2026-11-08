@@ -29,6 +29,7 @@ export default function Autodiagnostico({ onEstado }) {
   const [telefono, setTelefono] = useState('')
   const [empresa, setEmpresa] = useState('')
   const [consent, setConsent] = useState(false)
+  const [intento, setIntento] = useState(false) // pulsó enviar con algo sin rellenar
   const [estado, setEstado] = useState('form') // form | enviando | ok | error
   const [error, setError] = useState('')
   const [resultado, setResultado] = useState(null)
@@ -78,9 +79,26 @@ export default function Autodiagnostico({ onEstado }) {
   const emailOk = RE_EMAIL.test(email.trim())
   const contactoOk = nombre.trim() && emailOk && (rama !== 'empresa' || empresa.trim()) && consent
 
+  // Lo que falta para enviar, en el orden de los campos. El botón no se
+  // desactiva: si falta algo, al pulsarlo se dice qué y el foco va al primer
+  // campo pendiente (un botón gris sin explicación parecía que no hacía nada).
+  const faltan = [
+    !nombre.trim() && { id: 'ef-nombre', txt: 'tu nombre' },
+    rama === 'empresa' && !empresa.trim() && { id: 'ef-empresa', txt: 'el nombre de la empresa' },
+    !emailOk && { id: 'ef-email', txt: email.trim() ? 'un correo válido' : 'tu correo' },
+    !consent && { id: 'ef-consent', txt: 'marcar la casilla de privacidad' },
+  ].filter(Boolean)
+  const falta = (id) => intento && faltan.some((f) => f.id === id)
+  const enLista = (xs) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} y ${xs[xs.length - 1]}`)
+
   async function enviar(e) {
     e.preventDefault()
-    if (!contactoOk || estado === 'enviando') return
+    if (estado === 'enviando') return
+    if (!contactoOk) {
+      setIntento(true)
+      document.getElementById(faltan[0]?.id)?.focus()
+      return
+    }
     setEstado('enviando')
     setError('')
 
@@ -220,20 +238,23 @@ export default function Autodiagnostico({ onEstado }) {
               <div className="ef-field">
                 <label htmlFor="ef-nombre">Nombre</label>
                 <input id="ef-nombre" className="ef-input" type="text" autoComplete="name"
-                  value={nombre} onChange={(ev) => setNombre(ev.target.value)} required />
+                  value={nombre} onChange={(ev) => setNombre(ev.target.value)} required
+                  aria-invalid={falta('ef-nombre') || undefined} />
               </div>
               {rama === 'empresa' ? (
                 <div className="ef-field">
                   <label htmlFor="ef-empresa">Empresa</label>
                   <input id="ef-empresa" className="ef-input" type="text" autoComplete="organization"
-                    value={empresa} onChange={(ev) => setEmpresa(ev.target.value)} required />
+                    value={empresa} onChange={(ev) => setEmpresa(ev.target.value)} required
+                    aria-invalid={falta('ef-empresa') || undefined} />
                 </div>
               ) : null}
               <div className="ef-grid-2">
                 <div className="ef-field">
                   <label htmlFor="ef-email">{rama === 'empresa' ? 'Correo de trabajo' : 'Correo'}</label>
                   <input id="ef-email" className="ef-input" type="email" autoComplete="email" inputMode="email"
-                    value={email} onChange={(ev) => setEmail(ev.target.value)} required />
+                    value={email} onChange={(ev) => setEmail(ev.target.value)} required
+                    aria-invalid={falta('ef-email') || undefined} />
                 </div>
                 <div className="ef-field">
                   <label htmlFor="ef-tel">Teléfono <span className="ef-opc">(opcional)</span></label>
@@ -242,17 +263,20 @@ export default function Autodiagnostico({ onEstado }) {
                 </div>
               </div>
             </div>
-            <label className="ef-consent">
-              <input type="checkbox" checked={consent} onChange={(ev) => setConsent(ev.target.checked)} />
+            <label className={`ef-consent${falta('ef-consent') ? ' is-falta' : ''}`}>
+              <input id="ef-consent" type="checkbox" checked={consent} onChange={(ev) => setConsent(ev.target.checked)} />
               <span>
                 Acepto que Elena Fontecha trate mis datos para ponerse en contacto conmigo sobre este
                 autodiagnóstico, conforme a su{' '}
                 <a href={PRIVACIDAD} target="_blank" rel="noopener noreferrer">política de privacidad</a>.
               </span>
             </label>
-            <button className="ef-btn ef-btn--full" type="submit" disabled={!contactoOk || estado === 'enviando'}>
+            <button className="ef-btn ef-btn--full" type="submit" disabled={estado === 'enviando'}>
               {estado === 'enviando' ? 'Enviando…' : <>Ver mi lectura <IcoFlecha /></>}
             </button>
+            {intento && faltan.length ? (
+              <p className="ef-falta" role="alert">Para enviarlo te falta: {enLista(faltan.map((f) => f.txt))}.</p>
+            ) : null}
             {error ? <p className="ef-error" role="alert">{error}</p> : null}
             <p className="ef-nota">Tus respuestas las lee Elena. No se comparten con terceros.</p>
           </form>
