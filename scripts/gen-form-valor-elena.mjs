@@ -25,7 +25,7 @@ const FORMS = [
     title: 'Autodiagnóstico · Para ti',
     pipeline: 'Captación (leads)',
     stage: 'lead',
-    description: 'Landing VSL de Elena (/elenafontecha/valor), rama «Para mí». Preguntas que se adaptan al rol y a lo que quiere revisar; al enviar se calcula el perfil (Rodri, Laura o alta dirección) y la estación de entrada del recorrido. Entra en «Captación (leads)», etapa «Lead (autodiagnóstico)».',
+    description: 'Web de Elena (repo SASbot01/elenafontecha), rama «Para mí». Preguntas que se adaptan al rol y a lo que quiere revisar; al enviar se calcula el perfil (Rodri, Laura o alta dirección) y la estación de entrada del recorrido. Entra en «Captación (leads)», etapa «Lead (autodiagnóstico)».',
   },
   {
     slug: RAMAS.empresa.form,
@@ -33,7 +33,7 @@ const FORMS = [
     title: 'Autodiagnóstico · Empresa',
     pipeline: 'Empresas y equipos',
     stage: 'contacto',
-    description: 'Landing VSL de Elena (/elenafontecha/valor), rama «Para mi equipo o mi empresa»: sector, tamaño, momento, a quién va, necesidades, formato, plazo, presupuesto y quién decide. Al enviar se calcula el perfil de empresa y por dónde empezar. Entra en «Empresas y equipos», etapa «Contacto». El nombre de la empresa va a la ficha del contacto.',
+    description: 'Web de Elena (repo SASbot01/elenafontecha), rama «Para mi equipo o mi empresa»: sector, tamaño, momento, a quién va, necesidades, formato, plazo, presupuesto y quién decide. Al enviar se calcula el perfil de empresa y por dónde empezar. Entra en «Empresas y equipos», etapa «Contacto». El nombre de la empresa va a la ficha del contacto.',
   },
 ]
 
@@ -80,15 +80,17 @@ function sql(forms) {
          active = true, pipeline_id = excluded.pipeline_id, stage_key = excluded.stage_key,
          booked_stage_key = excluded.booked_stage_key, updated_at = now();`).join('\n')
 
-  return `-- HELM — Autodiagnóstico de la landing VSL de Elena Fontecha (/elenafontecha/valor).
+  return `-- HELM — Formularios del autodiagnóstico de la web de Elena Fontecha.
 --
--- GENERADO por scripts/gen-form-valor-elena.mjs a partir de
--- src/elena/diagnostico.js. No lo edites a mano: cambia las preguntas
--- allí y vuelve a lanzar el script.
+-- La web vive FUERA de HELM, en el repo SASbot01/elenafontecha (como las de
+-- detrasdecamara.org o sergiofilm). Este archivo lo GENERA su
+-- scripts/gen-form-valor-elena.mjs a partir de src/elena/diagnostico.js: no
+-- lo edites a mano; cambia las preguntas allí, vuelve a lanzar el script y
+-- copia la salida (helm/helm_formulario_valor_elenafontecha.sql) aquí.
 --
 -- Dos formularios, uno por rama de la puerta («Para mí» / «Para mi equipo o
 -- mi empresa»), cada uno a su embudo. La página manda {slug:'elenafontecha',
--- form:'valor' | 'valor-empresa', ...} a /api/formularios, que descarta toda
+-- form:'valor' | 'valor-empresa', ...} a https://helm.s4sf.net/api/formularios, que descarta toda
 -- clave que el formulario no declare. Los datos de contacto (nombre, correo,
 -- teléfono, empresa) no van como campos: viven en la ficha del contacto.
 --
