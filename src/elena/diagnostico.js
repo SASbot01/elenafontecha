@@ -8,8 +8,8 @@
 // declare.
 //
 // La puerta separa dos ramas, cada una con su formulario y su embudo:
-//   · «Para mí»                    → form 'valor'         → «Captación (leads)»
-//   · «Para mi equipo o empresa»   → form 'valor-empresa' → «Empresas y equipos»
+//   · «Para mí»                    → form 'valor'         → «Funnel 1» · Lead · persona
+//   · «Para mi equipo o empresa»   → form 'valor-empresa' → «Funnel 1» · Lead · empresa
 //
 // Dentro de cada rama, las preguntas aparecen o no según lo ya contestado
 // (`si`) y cambian su enunciado (`label` como función). Al final se calcula el

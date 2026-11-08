@@ -39,8 +39,10 @@ El autodiagnóstico envía un `POST` a `https://helm.s4sf.net/api/formularios` c
 
 | Rama | `form` | Embudo / etapa en HELM |
 |---|---|---|
-| «Para mí» | `valor` | Captación (leads) / Lead (autodiagnóstico) |
-| «Para mi equipo o mi empresa» | `valor-empresa` | Empresas y equipos / Contacto |
+| «Para mí» | `valor` | Funnel 1 / Lead · persona |
+| «Para mi equipo o mi empresa» | `valor-empresa` | Funnel 1 / Lead · empresa |
+
+Etapas de «Funnel 1»: Lead · persona · Lead · empresa → En nutrición → Conversación reservada → Propuesta → Cliente / Descartado.
 
 Cada lead llega con su **perfil** calculado:
 

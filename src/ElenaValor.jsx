@@ -16,8 +16,8 @@ import { dos, ir, IcoPlay, IcoCheck, IcoFlecha } from './elena/comun.jsx'
 // su Calendly, con nombre y correo ya rellenos.
 //
 // El autodiagnóstico (./elena/Autodiagnostico.jsx) envía el lead al CRM de
-// Elena en HELM: personas a «Captación (leads)», empresas a «Empresas y
-// equipos». Textos editables en ./elena/contenido.js; preguntas y ramas en
+// Elena en HELM: pipeline «Funnel 1» (personas y empresas, cada una por su
+// etapa de entrada). Textos editables en ./elena/contenido.js; preguntas y ramas en
 // ./elena/diagnostico.js.
 //
 // Fotos: sesión de su web elenafontecha.com, recortadas en public/elena/.

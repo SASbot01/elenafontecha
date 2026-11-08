@@ -18,22 +18,37 @@ import { PUERTA, RAMAS, CALCULADOS, valorDe } from '../src/elena/diagnostico.js'
 const CLIENT_ID = '1b17a1dc-e34a-4aaf-b55e-892e970550bc'
 const SALIDA = fileURLToPath(new URL('../helm/helm_formulario_valor_elenafontecha.sql', import.meta.url))
 
+// El embudo de la web: un pipeline propio en el CRM de Elena. Las dos ramas
+// entran en él, cada una por su etapa de entrada, y luego siguen juntas.
+const FUNNEL = {
+  nombre: 'Funnel 1',
+  etapas: [
+    { key: 'lead_persona', label: 'Lead · persona', tone: '' },
+    { key: 'lead_empresa', label: 'Lead · empresa', tone: '' },
+    { key: 'nutricion', label: 'En nutrición', tone: 'cyan' },
+    { key: 'llamada', label: 'Conversación reservada', tone: 'amber' },
+    { key: 'propuesta', label: 'Propuesta', tone: 'violet' },
+    { key: 'cliente', label: 'Cliente', tone: 'green' },
+    { key: 'descartado', label: 'Descartado', tone: 'red' },
+  ],
+}
+
 const FORMS = [
   {
     slug: RAMAS.persona.form,
     rama: 'persona',
     title: 'Autodiagnóstico · Para ti',
-    pipeline: 'Captación (leads)',
-    stage: 'lead',
-    description: 'Web de Elena (repo SASbot01/elenafontecha), rama «Para mí». Preguntas que se adaptan al rol y a lo que quiere revisar; al enviar se calcula el perfil (Rodri, Laura o alta dirección) y la estación de entrada del recorrido. Entra en «Captación (leads)», etapa «Lead (autodiagnóstico)».',
+    pipeline: FUNNEL.nombre,
+    stage: 'lead_persona',
+    description: 'Web de Elena (repo SASbot01/elenafontecha), rama «Para mí». Preguntas que se adaptan al rol y a lo que quiere revisar; al enviar se calcula el perfil (Rodri, Laura o alta dirección) y la estación de entrada del recorrido. Entra en «Funnel 1», etapa «Lead · persona».',
   },
   {
     slug: RAMAS.empresa.form,
     rama: 'empresa',
     title: 'Autodiagnóstico · Empresa',
-    pipeline: 'Empresas y equipos',
-    stage: 'contacto',
-    description: 'Web de Elena (repo SASbot01/elenafontecha), rama «Para mi equipo o mi empresa»: sector, tamaño, momento, a quién va, necesidades, formato, plazo, presupuesto y quién decide. Al enviar se calcula el perfil de empresa y por dónde empezar. Entra en «Empresas y equipos», etapa «Contacto». El nombre de la empresa va a la ficha del contacto.',
+    pipeline: FUNNEL.nombre,
+    stage: 'lead_empresa',
+    description: 'Web de Elena (repo SASbot01/elenafontecha), rama «Para mi equipo o mi empresa»: sector, tamaño, momento, a quién va, necesidades, formato, plazo, presupuesto y quién decide. Al enviar se calcula el perfil de empresa y por dónde empezar. Entra en «Funnel 1», etapa «Lead · empresa». El nombre de la empresa va a la ficha del contacto.',
   },
 ]
 
@@ -89,7 +104,8 @@ function sql(forms) {
 -- copia la salida (helm/helm_formulario_valor_elenafontecha.sql) aquí.
 --
 -- Dos formularios, uno por rama de la puerta («Para mí» / «Para mi equipo o
--- mi empresa»), cada uno a su embudo. La página manda {slug:'elenafontecha',
+-- mi empresa»), los dos al embudo «Funnel 1», cada uno por su
+-- etapa de entrada. La página manda {slug:'elenafontecha',
 -- form:'valor' | 'valor-empresa', ...} a https://helm.s4sf.net/api/formularios, que descarta toda
 -- clave que el formulario no declare. Los datos de contacto (nombre, correo,
 -- teléfono, empresa) no van como campos: viven en la ficha del contacto.
@@ -111,6 +127,14 @@ begin
     raise notice '[HELM] No encuentro el perfil de Elena Fontecha. Los formularios NO se han creado.';
     return;
   end if;
+
+  -- ── Embudo «${FUNNEL.nombre}»: se crea si no existe (si ya existe, no se tocan sus etapas) ──
+  select id into v_pipeline from crm_pipelines
+   where client_id = v_client and name = ${q(FUNNEL.nombre)} limit 1;
+  if v_pipeline is null then
+    insert into crm_pipelines (client_id, name, stages, is_default)
+    values (v_client, ${q(FUNNEL.nombre)}, $stages$${JSON.stringify(FUNNEL.etapas)}$stages$::jsonb, false);
+  end if;
 ${bloques}
 
   raise notice '[HELM] Autodiagnóstico de Elena Fontecha listo (valor + valor-empresa).';
@@ -120,7 +144,7 @@ end $$;
 
 const forms = formularios()
 if (process.argv.includes('--json')) {
-  process.stdout.write(JSON.stringify({ clientId: CLIENT_ID, forms }))
+  process.stdout.write(JSON.stringify({ clientId: CLIENT_ID, funnel: FUNNEL, forms }))
 } else {
   writeFileSync(SALIDA, sql(forms))
   for (const f of forms) console.log(`${f.slug}: ${f.fields.length} campos → «${f.pipeline}» / ${f.stage}`)
