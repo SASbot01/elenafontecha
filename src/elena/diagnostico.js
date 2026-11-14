@@ -196,8 +196,8 @@ export const PREGUNTAS_PERSONA = [
 // ── Rama empresa ────────────────────────────────────────────────────────────
 
 const UNA_PERSONA = 'A una persona concreta (CEO, directivo/a)'
-const LCP_NECESIDAD = 'Conocer su estilo de liderazgo (evaluación LCP)'
-const LCP_FORMATO = 'Evaluación de liderazgo (LCP) con sesiones de devolución'
+const LCP_NECESIDAD = 'Conocer su estilo de liderazgo'
+const LCP_FORMATO = 'Evaluación del liderazgo con sesiones de devolución'
 const soloUnaPersona = (r) => Array.isArray(r.a_quien) && r.a_quien.length === 1 && r.a_quien[0] === UNA_PERSONA
 
 export const PREGUNTAS_EMPRESA = [
@@ -407,7 +407,7 @@ export const valorDe = (op) => (typeof op === 'string' ? op : op.v)
 const LECTURAS = {
   alta: {
     titulo: 'Una conversación de par a par',
-    texto: 'Desde la alta dirección se decide a menudo en soledad y con poco tiempo para mirarse. Elena ha estado en un comité de dirección y en un consejo: la conversación parte de ahí.',
+    texto: 'Desde la dirección general se decide a menudo en soledad y con poco tiempo para mirarse. Elena ha estado en un comité de dirección y en un consejo: la conversación parte de ahí.',
   },
   lider: {
     titulo: 'Tu manera de dirigir y tu vida, en la misma conversación',
@@ -440,7 +440,7 @@ export function diagnosticoPersona(r) {
 
   let clave
   let perfil
-  if (dirige && liderazgo && ALTA.includes(r.rol)) { clave = 'alta'; perfil = 'Alta dirección · De par a par' }
+  if (dirige && liderazgo && ALTA.includes(r.rol)) { clave = 'alta'; perfil = 'Dirección general y consejo · De par a par' }
   else if (dirige && liderazgo && r.rol === ROL.nuevo) { clave = 'nuevo'; perfil = 'Rodri · Recién promocionado/a' }
   else if (dirige && liderazgo) { clave = 'lider'; perfil = 'Rodri · Líder en primera línea' }
   else if (conEquipo && liderazgo) { clave = 'fundador'; perfil = 'Rodri · Fundador/a con equipo' }
