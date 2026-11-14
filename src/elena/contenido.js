@@ -17,8 +17,8 @@ export const VIDEO_EMBED = ''
 // correo ya rellenos.
 export const CALENDLY = 'https://calendly.com/elena-fontecha/quieres-informacion'
 export const WHATSAPP = 'https://wa.me/34608665343'
-// Comunidad en Skool (placeholder: cambiar por el Skool propio de Elena cuando exista).
-export const SKOOL = 'https://www.skool.com/helm-academy-4887'
+// Comunidad de Elena en Skool: «Las Seis Estaciones».
+export const SKOOL = 'https://www.skool.com/las-seis-estaciones-9783'
 // Endpoint de formularios de HELM: guarda el lead en el CRM de Elena.
 export const API_FORMULARIOS = 'https://helm.s4sf.net/api/formularios'
 // ───────────────────────────────────────────────────────────────────────────
