@@ -17,6 +17,8 @@ export const VIDEO_EMBED = ''
 // correo ya rellenos.
 export const CALENDLY = 'https://calendly.com/elena-fontecha/quieres-informacion'
 export const WHATSAPP = 'https://wa.me/34608665343'
+// Comunidad de Elena en Skool: «Las Seis Estaciones».
+export const SKOOL = 'https://www.skool.com/las-seis-estaciones-9783'
 // Endpoint de formularios de HELM: guarda el lead en el CRM de Elena.
 export const API_FORMULARIOS = 'https://helm.s4sf.net/api/formularios'
 // ───────────────────────────────────────────────────────────────────────────
@@ -96,7 +98,7 @@ export const ESTACIONES = [
 export const DIMENSIONES = ['Física', 'Mental', 'Emocional', 'Espiritual']
 
 export const CIFRAS = [
-  { n: '+25', t: 'años en alta dirección y en consejos' },
+  { n: '+25', t: 'años de trayectoria directiva y en consejos' },
   { n: '60', t: 'personas en los equipos que formó y dirigió' },
   { n: '3', t: 'grandes compañías: PortAventura, Servihabitat y Haya Real Estate' },
 ]

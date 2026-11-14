@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { API_FORMULARIOS, CALENDLY, WHATSAPP, REDES, PRIVACIDAD } from './contenido.js'
+import { API_FORMULARIOS, CALENDLY, WHATSAPP, REDES, PRIVACIDAD, SKOOL } from './contenido.js'
 import {
   PUERTA, RAMAS, ramaDe, preguntasVisibles, totalEstimado, texto, valorDe, diagnosticoPersona, diagnosticoEmpresa,
 } from './diagnostico.js'
@@ -200,9 +200,20 @@ export default function Autodiagnostico({ onEstado }) {
           </>
         )}
 
-        <a className="ef-btn ef-btn--full ef-res__cta" href={calendlyUrl} target="_blank" rel="noopener noreferrer">
-          {resultado.rama === 'empresa' ? 'Reservar una conversación con Elena' : 'Reservar mi conversación gratuita'} <IcoFlecha />
-        </a>
+        {resultado.rama === 'empresa' ? (
+          <a className="ef-btn ef-btn--full ef-res__cta" href={calendlyUrl} target="_blank" rel="noopener noreferrer">
+            Reservar una conversación con Elena <IcoFlecha />
+          </a>
+        ) : (
+          <>
+            <a className="ef-btn ef-btn--full ef-res__cta" href={SKOOL} target="_blank" rel="noopener noreferrer">
+              Unirse a la comunidad <IcoFlecha />
+            </a>
+            <a className="ef-btn ef-btn--full ef-btn--ghost" href={calendlyUrl} target="_blank" rel="noopener noreferrer" style={{ marginTop: '10px' }}>
+              O reservar mi conversación gratuita
+            </a>
+          </>
+        )}
         <p className="ef-res__alt">
           ¿Prefieres escribirle? <a href={WHATSAPP} target="_blank" rel="noopener noreferrer">WhatsApp</a>
           {' · '}

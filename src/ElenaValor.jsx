@@ -145,7 +145,7 @@ export default function ElenaValor() {
 
   useEffect(() => {
     const tituloAntes = document.title
-    document.title = 'Elena Fontecha · ¿Sigo queriendo la vida que estoy construyendo?'
+    document.title = 'Elena Fontecha · Desarrollo personal y liderazgo, integrados'
     const meta = document.querySelector('meta[name="description"]')
     const descAntes = meta?.getAttribute('content')
     meta?.setAttribute('content', 'Desarrollo personal y liderazgo, integrados. Un autodiagnóstico que se adapta a ti o a tu empresa y una primera conversación gratuita con Elena Fontecha.')
@@ -201,7 +201,7 @@ export default function ElenaValor() {
           <div className="ef-hero__txt">
             <p className="ef-eyebrow">Desarrollo personal y liderazgo, integrados</p>
             <h1 className="ef-h1">
-              ¿Sigo queriendo la vida que estoy construyendo <em>con mi manera de vivir y de actuar?</em>
+              Acompaño a personas y equipos a decidir qué quieren conseguir <em>y a encontrar su manera de hacerlo.</em>
             </h1>
             <p className="ef-lead">
               Se puede construir una trayectoria sólida y una vida llena de compromisos sin
@@ -218,7 +218,7 @@ export default function ElenaValor() {
               </button>
             </div>
             <p className="ef-hero__cred">
-              <strong>+25 años en alta dirección.</strong> Ex Directora General Adjunta Ejecutiva y
+              <strong>+25 años de trayectoria directiva.</strong> Ex Directora General Adjunta Ejecutiva y
               Secretaria del Consejo de Administración de PortAventura.
             </p>
           </div>
