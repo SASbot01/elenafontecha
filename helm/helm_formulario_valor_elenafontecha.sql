@@ -288,6 +288,7 @@ begin
       "Empresa familiar",
       "Startup o scale-up",
       "Pyme consolidada",
+      "Gran empresa",
       "Grupo o multinacional",
       "Institución u organización sin ánimo de lucro"
     ]
@@ -302,6 +303,7 @@ begin
       "Relevo generacional o sucesión",
       "Fusión, venta o reestructuración",
       "Cambio en el equipo de dirección",
+      "En fase de recesión",
       "Estable: queremos profesionalizar el liderazgo"
     ]
   },
@@ -332,7 +334,7 @@ begin
   },
   {
     "key": "necesidades",
-    "label": "Qué necesitan trabajar",
+    "label": "Qué necesitan aprender o mejorar",
     "type": "multi",
     "required": true,
     "options": [
@@ -342,13 +344,13 @@ begin
       "Decidir juntos y con claridad de roles",
       "Gestionar la presión sin quemarse",
       "Liderar un cambio",
-      "Conocer su estilo de liderazgo (evaluación LCP)",
+      "Conocer su estilo de liderazgo",
       "Relación con el consejo y gobierno corporativo"
     ]
   },
   {
     "key": "sintoma",
-    "label": "¿Qué está pasando ahora que os hace buscar esto?",
+    "label": "¿Qué motivo os lleva ahora a buscar ayuda externa?",
     "type": "multi",
     "required": true,
     "options": [
@@ -366,7 +368,7 @@ begin
     "type": "select",
     "required": true,
     "options": [
-      "Evaluación de liderazgo (LCP) con sesiones de devolución",
+      "Evaluación del liderazgo con sesiones de devolución",
       "Programa para el equipo directivo",
       "Mentoría a una persona clave",
       "Un taller o una jornada",
