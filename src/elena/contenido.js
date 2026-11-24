@@ -1,6 +1,6 @@
 // Contenido de la landing VSL de Elena Fontecha.
 //
-// Todo sale de material suyo: su propuesta de método (las 6 estaciones, la
+// Todo sale de material suyo: su método (el Método CENTRO, la
 // pregunta central, la integración vida + liderazgo), su web elenafontecha.com
 // (trayectoria y credenciales), su Instagram @elenafontechaoficial (la
 // primera conversación gratis) y su bio de marca. Sin testimonios: aún no hay
@@ -19,6 +19,8 @@ export const CALENDLY = 'https://calendly.com/elena-fontecha/quieres-informacion
 export const WHATSAPP = 'https://wa.me/34608665343'
 // Comunidad de Elena en Skool: «Las Seis Estaciones».
 export const SKOOL = 'https://www.skool.com/las-seis-estaciones-9783'
+// Adonde lleva la landing de la formación gratis al enviar el formulario.
+export const SKOOL_ABOUT = 'https://www.skool.com/las-seis-estaciones-9783/about'
 // Endpoint de formularios de HELM: guarda el lead en el CRM de Elena.
 export const API_FORMULARIOS = 'https://helm.s4sf.net/api/formularios'
 // ───────────────────────────────────────────────────────────────────────────
@@ -48,46 +50,54 @@ export const NO_ES_PARA_TI = [
   'Quieres resultados sin implicarte en el proceso.',
 ]
 
-// Las seis estaciones, cada una con su plano personal y su plano de liderazgo
-// (de la propuesta de método de Elena).
-export const ESTACIONES = [
+// El Método CENTRO de Elena: seis pasos en ciclo alrededor de la persona,
+// cada uno con su plano personal y su plano de liderazgo. Antes se llamaban
+// «las seis estaciones»; la comunidad de Skool conserva ese nombre.
+export const METODO = 'Método CENTRO'
+export const CENTRO = [
   {
-    nombre: 'Mirarme con verdad',
+    letra: 'C',
+    nombre: 'Conocerse',
     vida: 'Comprender quién soy hoy y desde dónde actúo. Reconocer capacidades, necesidades y contradicciones; distinguir hechos de interpretaciones.',
     pregunta: '¿Qué necesito reconocer de mí y de mi situación, aunque resulte incómodo?',
     liderazgo: 'Autoconocimiento y manera de dirigir',
     liderazgoTxt: 'Observar cómo tus fortalezas, miedos y necesidades aparecen al escuchar, delegar, exigir o afrontar desacuerdos. Contrastar lo que pretendes con lo que otras personas experimentan.',
   },
   {
-    nombre: 'Comprender qué quiero y para qué',
+    letra: 'E',
+    nombre: 'Elegir tu rumbo',
     vida: 'Dar sentido a la dirección deseada y definir qué significa el éxito en esta etapa: qué conservar, recuperar, ampliar, explorar, reducir o dejar.',
     pregunta: '¿Qué quiero realmente y para qué es importante en mi vida?',
     liderazgo: 'Dirección personal y contribución profesional',
     liderazgoTxt: 'Precisar qué quieres aportar, qué resultados consideras valiosos y qué clase de líder quieres ser. Examinar las tensiones entre tus prioridades y las de la organización.',
   },
   {
-    nombre: 'Comprender mi lugar y mis relaciones',
+    letra: 'N',
+    nombre: 'Nombrar tus sistemas',
     vida: 'Explorar los sistemas de los que formo parte, mis papeles, los compromisos que asumo y las expectativas que intervienen.',
     pregunta: '¿Cómo quiero estar en mis relaciones y qué necesito revisar, pedir o acordar?',
     liderazgo: 'Pertenencia y responsabilidad',
     liderazgoTxt: 'Revisar tu papel, tu autoridad, tu influencia y tus compromisos. Reconocer las necesidades de otros y las condiciones que facilitan o dificultan la colaboración.',
   },
   {
-    nombre: 'Dar forma a mi plan de vida',
+    letra: 'T',
+    nombre: 'Trazar tu plan',
     vida: 'Conectar lo que quiero con prioridades, metas, recursos y circunstancias. Examinar alternativas, costes y efectos sobre las demás áreas.',
     pregunta: '¿Cómo puede tener lugar lo que quiero sin perder de vista el conjunto de mi vida?',
     liderazgo: 'Plan de vida y prioridades profesionales',
     liderazgoTxt: 'Relacionar las metas profesionales con el tiempo, la energía y los recursos disponibles. Considerar lo que tus prioridades, plazos y compromisos suponen para el equipo.',
   },
   {
-    nombre: 'Decidir y actuar',
+    letra: 'R',
+    nombre: 'Resolver y actuar',
     vida: 'Preparar decisiones, conversaciones, pruebas y hábitos que permitan avanzar y aprender.',
     pregunta: '¿Qué movimiento concreto tiene sentido ahora y qué necesito para hacerlo posible?',
     liderazgo: 'Acción personal y prácticas de liderazgo',
     liderazgoTxt: 'Traducir la reflexión en conversaciones, acuerdos, delegación y cambios observables. Distinguir qué puedes hacer tú, qué requiere negociación y qué exige una actuación colectiva.',
   },
   {
-    nombre: 'Revisar y evolucionar',
+    letra: 'O',
+    nombre: 'Observar y ajustar',
     vida: 'Valorar resultados, costes y aprendizajes; comprobar si las metas siguen teniendo sentido y ajustar el rumbo.',
     pregunta: '¿Sigo queriendo esto y qué necesito mantener, cambiar o dejar?',
     liderazgo: 'Revisión personal y efectos colectivos',
@@ -120,7 +130,7 @@ export const PASOS = [
 ]
 
 export const FAQ = [
-  ['¿Tengo que estar en crisis para hacerlo?', 'No. Este recorrido no presupone insatisfacción ni crisis. Sirve tanto para confirmar lo que quieres conservar como para abrir cambios pequeños o profundos.'],
+  ['¿Tengo que estar en crisis para hacerlo?', 'No. El Método CENTRO no presupone insatisfacción ni crisis. Sirve tanto para confirmar lo que quieres conservar como para abrir cambios pequeños o profundos.'],
   ['¿Es terapia?', 'No. Es un acompañamiento de desarrollo personal y liderazgo, orientado a decisiones, conversaciones y acciones concretas en tu vida y en tu trabajo.'],
   ['¿Qué pasa con mis respuestas?', 'Las lee Elena personalmente para preparar la conversación contigo. No se comparten con terceros.'],
   ['¿Cuánto cuesta la primera conversación?', 'Nada. Es gratuita y sin compromiso: sirve para entender tu momento y ver si tiene sentido trabajar juntas o juntos.'],

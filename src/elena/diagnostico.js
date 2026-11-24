@@ -21,7 +21,7 @@
 // Una condición `si` solo puede mirar respuestas ANTERIORES de su rama: así
 // avanzar nunca cambia las preguntas que ya quedaron atrás.
 
-import { ESTACIONES } from './contenido.js'
+import { CENTRO } from './contenido.js'
 
 export const TIPO_PERSONA = 'Para mí'
 export const TIPO_EMPRESA = 'Para mi equipo o mi empresa'
@@ -59,7 +59,7 @@ export const REVISAR = {
   ambas: 'Las dos cosas, a la vez',
 }
 
-// Cada momento abre una estación del recorrido (índice en ESTACIONES).
+// Cada momento abre un paso del Método CENTRO (índice en CENTRO).
 export const MOMENTOS = [
   ['Quiero mirar con verdad dónde estoy', 0],
   ['No tengo claro qué quiero, ni para qué', 1],
@@ -153,7 +153,7 @@ export const PREGUNTAS_PERSONA = [
   {
     key: 'dimension',
     label: '¿Qué parte sientes más desatendida?',
-    sub: 'Son las cuatro dimensiones del recorrido. Elige la que más te pide atención.',
+    sub: 'Son las cuatro dimensiones de la persona, en el centro del método. Elige la que más te pide atención.',
     tipo: 'uno',
     options: [
       'Lo físico (energía, cuerpo, descanso)',
@@ -243,6 +243,7 @@ export const PREGUNTAS_EMPRESA = [
       'Empresa familiar',
       'Startup o scale-up',
       'Pyme consolidada',
+      'Gran empresa',
       'Grupo o multinacional',
       'Institución u organización sin ánimo de lucro',
     ],
@@ -256,6 +257,7 @@ export const PREGUNTAS_EMPRESA = [
       'Relevo generacional o sucesión',
       'Fusión, venta o reestructuración',
       'Cambio en el equipo de dirección',
+      'En fase de recesión',
       'Estable: queremos profesionalizar el liderazgo',
     ],
   },
@@ -282,8 +284,8 @@ export const PREGUNTAS_EMPRESA = [
   },
   {
     key: 'necesidades',
-    labelCrm: 'Qué necesitan trabajar',
-    label: (r) => (soloUnaPersona(r) ? '¿Qué necesita trabajar esa persona?' : '¿Qué necesitan aprender o trabajar?'),
+    labelCrm: 'Qué necesitan aprender o mejorar',
+    label: (r) => (soloUnaPersona(r) ? '¿Qué necesita aprender o mejorar esa persona?' : '¿Qué necesitan aprender o mejorar?'),
     sub: 'Elige hasta tres.',
     tipo: 'varios',
     max: 3,
@@ -300,7 +302,7 @@ export const PREGUNTAS_EMPRESA = [
   },
   {
     key: 'sintoma',
-    label: '¿Qué está pasando ahora que os hace buscar esto?',
+    label: '¿Qué motivo os lleva ahora a buscar ayuda externa?',
     sub: 'Elige hasta dos.',
     tipo: 'varios',
     max: 2,
@@ -453,12 +455,12 @@ export function diagnosticoPersona(r) {
   if ((clave === 'impacto' || clave === 'silencioso') && dirige) perfil += ' · con cargo directivo'
 
   const idx = (MOMENTOS.find(([m]) => m === r.momento) || MOMENTOS[0])[1]
-  const est = ESTACIONES[idx]
+  const est = CENTRO[idx]
   return {
     perfil,
     lectura: LECTURAS[clave],
     estacion: { n: idx + 1, ...est },
-    punto_entrada: `Estación ${idx + 1} · ${est.nombre}`,
+    punto_entrada: `${est.letra} · ${est.nombre} (Método CENTRO)`,
     conLiderazgo: Boolean(liderazgo),
     dimension: r.dimension ? r.dimension.replace(/\s*\(.*\)$/, '') : '',
     alLimite,
