@@ -2,16 +2,17 @@ import { useEffect, useRef, useState } from 'react'
 import './elena/elena.css'
 import {
   VIDEO_EMBED, REDES, PRIVACIDAD, PREGUNTA_GANCHO,
-  PARA_TI, NO_ES_PARA_TI, ESTACIONES, DIMENSIONES, CIFRAS, CREDENCIALES, TRAYECTORIA, PASOS, FAQ,
+  PARA_TI, NO_ES_PARA_TI, CENTRO, METODO, DIMENSIONES, CIFRAS, CREDENCIALES, TRAYECTORIA, PASOS, FAQ,
 } from './elena/contenido'
 import Autodiagnostico from './elena/Autodiagnostico.jsx'
+import Rueda from './elena/Rueda.jsx'
 import { dos, ir, IcoPlay, IcoCheck, IcoFlecha } from './elena/comun.jsx'
 
 // Landing VSL de Elena Fontecha (repo SASbot01/elenafontecha).
 //
 // Arriba, su pregunta central de gancho con su retrato; luego el vídeo (VSL),
-// para quién es, la idea de vida + liderazgo integrados, el recorrido de seis
-// estaciones (interactivo), quién es Elena y el autodiagnóstico, que capta el
+// para quién es, la idea de vida + liderazgo integrados, el Método CENTRO
+// (rueda interactiva), quién es Elena y el autodiagnóstico, que capta el
 // lead y le da el siguiente paso: reservar la primera conversación gratuita en
 // su Calendly, con nombre y correo ya rellenos.
 //
@@ -78,61 +79,6 @@ function Video() {
   )
 }
 
-// La rueda de las seis estaciones: un recorrido circular con la persona en el
-// centro. Cada nodo se puede pulsar y abre su estación en la lista de al lado.
-function Rueda({ activa, setActiva }) {
-  const C = 200
-  const R = 152
-  const ang = (i, d = 0) => ((-90 + i * 60 + d) * Math.PI) / 180
-  const pt = (a, r = R) => [C + r * Math.cos(a), C + r * Math.sin(a)]
-  const arco = (i) => {
-    const [x0, y0] = pt(ang(i, 13))
-    const [x1, y1] = pt(ang(i + 1, -15))
-    return `M${x0.toFixed(1)} ${y0.toFixed(1)} A${R} ${R} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`
-  }
-  const tecla = (i) => (e) => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiva(i) }
-  }
-  return (
-    <svg viewBox="0 0 400 400" className="ef-rueda" role="group" aria-label="Las seis estaciones del recorrido">
-      <defs>
-        <marker id="ef-punta" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-          <path d="M1 1 L8 5 L1 9" className="ef-rueda__punta" />
-        </marker>
-      </defs>
-      {ESTACIONES.map((_, i) => (
-        <path key={i} d={arco(i)} className="ef-rueda__arco" markerEnd="url(#ef-punta)" />
-      ))}
-      <circle cx={C} cy={C} r="100" className="ef-rueda__centro" />
-      <circle cx={C} cy={C} r="88" className="ef-rueda__anillo" />
-      <text x={C} y={C - 34} textAnchor="middle" className="ef-rueda__eyebrow">LA PERSONA</text>
-      <text x={C} y={C - 4} textAnchor="middle" className="ef-rueda__dim">{DIMENSIONES[0]} · {DIMENSIONES[1]}</text>
-      <text x={C} y={C + 20} textAnchor="middle" className="ef-rueda__dim">{DIMENSIONES[2]} · {DIMENSIONES[3]}</text>
-      <text x={C} y={C + 48} textAnchor="middle" className="ef-rueda__social">+ lo social, en todas</text>
-      {ESTACIONES.map((e, i) => {
-        const [x, y] = pt(ang(i))
-        const on = i === activa
-        return (
-          <g
-            key={e.nombre}
-            transform={`translate(${x.toFixed(1)} ${y.toFixed(1)})`}
-            className={`ef-rueda__nodo${on ? ' is-on' : ''}`}
-            role="button"
-            tabIndex={0}
-            aria-pressed={on}
-            aria-label={`Estación ${i + 1}: ${e.nombre}`}
-            onClick={() => setActiva(i)}
-            onKeyDown={tecla(i)}
-          >
-            <circle r="27" />
-            <text textAnchor="middle" dy="5">{dos(i + 1)}</text>
-          </g>
-        )
-      })}
-    </svg>
-  )
-}
-
 export default function ElenaValor() {
   const raiz = useRef(null)
   const [estado, setEstado] = useState('form') // form | ok: lo avisa el autodiagnóstico
@@ -175,7 +121,7 @@ export default function ElenaValor() {
     return () => io.disconnect()
   }, [])
 
-  const e = ESTACIONES[activa]
+  const e = CENTRO[activa]
 
   return (
     <div className="ef-root" ref={raiz}>
@@ -187,7 +133,7 @@ export default function ElenaValor() {
           </button>
           <nav className="ef-nav" aria-label="Secciones">
             <button type="button" onClick={() => ir('video')}>El vídeo</button>
-            <button type="button" onClick={() => ir('metodo')}>El recorrido</button>
+            <button type="button" onClick={() => ir('metodo')}>{METODO}</button>
             <button type="button" onClick={() => ir('elena')}>Quién es Elena</button>
             <button type="button" onClick={() => ir('preguntas')}>Preguntas</button>
           </nav>
@@ -321,38 +267,40 @@ export default function ElenaValor() {
       </section>
 
       {/* ── Banda: el camino ─────────────────────────────────────────── */}
-      <section className="ef-camino" aria-label="El recorrido">
+      <section className="ef-camino" aria-label={METODO}>
         <img src={`${IMG}/camino.webp`} alt="" loading="lazy" width="1920" height="900" />
         <span className="ef-camino__velo" aria-hidden="true" />
         <blockquote className="ef-camino__q" data-ap>
-          <p>Las estaciones organizan una conversación que puede retomarse <em>a lo largo de la vida.</em></p>
+          <p>El Método CENTRO organiza una conversación que puede retomarse <em>a lo largo de la vida.</em></p>
         </blockquote>
       </section>
 
-      {/* ── El recorrido: seis estaciones ────────────────────────────── */}
+      {/* ── El Método CENTRO ─────────────────────────────────────────── */}
       <section className="ef-section" id="metodo">
         <div className="ef-wrap">
           <div className="ef-metodo__head" data-ap>
-            <p className="ef-eyebrow">El recorrido</p>
-            <h2 className="ef-h2">Seis estaciones. <em>Cada una mira a tu vida y a tu manera de dirigir.</em></h2>
+            <p className="ef-eyebrow">El método</p>
+            <h2 className="ef-h2">Método <span className="ef-centro-palabra">CENTRO</span>. <em>Seis pasos que miran a tu vida y a tu manera de dirigir.</em></h2>
             <p className="ef-p">
-              Un recorrido circular: su orden ayuda a comprender, pero admite retornos y distintos
-              puntos de entrada. En el centro, la persona en su realidad actual, con cuatro
-              dimensiones y lo social atravesándolas todas.
+              <strong>C</strong>onocerse, <strong>E</strong>legir tu rumbo, <strong>N</strong>ombrar tus sistemas,{' '}
+              <strong>T</strong>razar tu plan, <strong>R</strong>esolver y actuar y <strong>O</strong>bservar y ajustar.
+              Un ciclo: su orden ayuda a comprender, pero admite retornos y distintos puntos de
+              entrada. En el centro, la persona en su realidad actual, con cuatro dimensiones
+              ({DIMENSIONES.join(', ').toLowerCase()}) y lo social atravesándolas todas.
             </p>
           </div>
           <div className="ef-metodo__grid">
             <div className="ef-metodo__rueda" data-ap>
               <Rueda activa={activa} setActiva={setActiva} />
-              <p className="ef-metodo__hint">Pulsa una estación</p>
+              <p className="ef-metodo__hint">Pulsa una letra</p>
             </div>
             <ol className="ef-est" data-ap>
-              {ESTACIONES.map((est, i) => {
+              {CENTRO.map((est, i) => {
                 const on = i === activa
                 return (
                   <li key={est.nombre} className={`ef-est__item${on ? ' is-on' : ''}`}>
                     <button type="button" className="ef-est__btn" onClick={() => setActiva(i)} aria-expanded={on}>
-                      <span className="ef-est__n">{dos(i + 1)}</span>
+                      <span className="ef-est__n">{est.letra}</span>
                       <span className="ef-est__t">{est.nombre}</span>
                       <span className="ef-est__mas" aria-hidden="true" />
                     </button>

@@ -24,6 +24,8 @@ Es una web estática (Vite + React): se despliega tal cual en Vercel, sin variab
 | Textos de la página, enlaces, Calendly, WhatsApp, **el vídeo** (`VIDEO_EMBED`) | `src/elena/contenido.js` |
 | Preguntas, ramas y clasificación del autodiagnóstico | `src/elena/diagnostico.js` |
 | Estructura de la página | `src/ElenaValor.jsx` |
+| El Método CENTRO (letras, textos) y su rueda | `src/elena/contenido.js` (`CENTRO`) y `src/elena/Rueda.jsx` |
+| Landing de la formación gratis (`/formacion-gratis/`, lleva a Skool al enviar) | `src/FormacionGratis.jsx` y `formacion-gratis/index.html` |
 | El asistente y las lecturas finales | `src/elena/Autodiagnostico.jsx` |
 | Estilos (burdeos `#4F1828`, Montserrat) | `src/elena/elena.css` |
 | Fotos | `public/elena/` |

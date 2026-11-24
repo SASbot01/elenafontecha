@@ -226,7 +226,7 @@
 .ef-camino__q p{ margin:0; color:#fff; font-size:clamp(25px,3.1vw,40px); font-weight:300; line-height:1.28; letter-spacing:-0.015em; }
 .ef-camino__q em{ color:var(--rosa-claro); }
 
-/* ── El recorrido ────────────────────────────────────────────────────────── */
+/* ── El Método CENTRO ──────────────────────────────────────────────────────── */
 .ef-metodo__head{ max-width:760px; }
 .ef-metodo__grid{ display:grid; grid-template-columns:.95fr 1.05fr; gap:72px; align-items:center; margin-top:60px; }
 .ef-rueda{ display:block; width:100%; max-width:470px; margin:0 auto; overflow:visible; }
@@ -240,6 +240,9 @@
 .ef-rueda__nodo{ cursor:pointer; outline:none; }
 .ef-rueda__nodo circle{ fill:#fff; stroke:var(--burdeos); stroke-width:1.5; transition:fill .2s, stroke-width .2s; }
 .ef-rueda__nodo text{ font-size:13px; font-weight:700; letter-spacing:.04em; fill:var(--burdeos); transition:fill .2s; pointer-events:none; }
+.ef-rueda__figura{ fill:var(--burdeos); }
+.ef-rueda__nodo text.ef-rueda__letra{ font-size:20px; letter-spacing:0; }
+.ef-centro-palabra{ letter-spacing:.04em; }
 .ef-rueda__nodo:hover circle{ fill:var(--rosa); }
 .ef-rueda__nodo:focus-visible circle{ stroke-width:3.5; }
 .ef-rueda__nodo.is-on circle{ fill:var(--burdeos); }
@@ -253,7 +256,7 @@
   display:flex; align-items:center; gap:18px; width:100%; text-align:left;
   background:none; border:0; padding:20px 4px; cursor:pointer;
 }
-.ef-est__n{ flex:none; min-width:28px; font-size:13px; font-weight:700; letter-spacing:.08em; color:var(--burdeos); }
+.ef-est__n{ flex:none; min-width:28px; font-size:18px; font-weight:700; letter-spacing:.08em; color:var(--burdeos); }
 .ef-est__t{ flex:1; font-size:18px; font-weight:500; color:var(--tinta); transition:color .15s; }
 .ef-est__btn:hover .ef-est__t{ color:var(--burdeos); }
 .ef-est__mas{ position:relative; flex:none; width:14px; height:14px; }
@@ -519,3 +522,12 @@
   .ef-fija.is-oculta{ transform:translateY(140%); opacity:0; pointer-events:none; }
   .ef-fija .ef-btn{ box-shadow:0 0 0 1px rgba(255,255,255,.4); }
 }
+
+/* ── Landing de la formación gratis (/formacion-gratis/) ───────────────── */
+a.ef-wordmark{ text-decoration:none; }
+.ef-pasos--4{ grid-template-columns:repeat(4,1fr); margin-bottom:0; }
+.ef-recorre{ list-style:none; margin:28px 0 0; padding:0; display:grid; gap:18px; }
+.ef-recorre li{ border-left:2px solid var(--burdeos); padding:2px 0 2px 18px; }
+.ef-recorre li p:last-child{ margin:6px 0 0; font-size:15.5px; line-height:1.7; color:var(--tinta-2); }
+@media (max-width:920px){ .ef-pasos--4{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:640px){ .ef-pasos--4{ grid-template-columns:1fr; } }

@@ -21,7 +21,10 @@ const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const vacio = (v) => v == null || v === '' || (Array.isArray(v) && v.length === 0)
 
-export default function Autodiagnostico({ onEstado }) {
+// Props opcionales (las usa la landing de la formación gratis):
+// - destino: al enviar, en vez de la lectura, se lleva a la persona ahí.
+// - origen: etiqueta de origen del lead en el CRM.
+export default function Autodiagnostico({ onEstado, destino, origen: origenLanding }) {
   const [r, setR] = useState({})
   const [i, setI] = useState(0)
   const [nombre, setNombre] = useState('')
@@ -129,10 +132,10 @@ export default function Autodiagnostico({ onEstado }) {
           email: email.trim(),
           telefono: telefono.trim(),
           ...(rama === 'empresa' ? { empresa: empresa.trim() } : {}),
-          origen: rama === 'empresa' ? 'Landing VSL · empresa' : 'Landing VSL · persona',
+          origen: `${origenLanding || 'Landing VSL'} · ${rama === 'empresa' ? 'empresa' : 'persona'}`,
           respuestas,
           meta: {
-            origen: `Web de Elena · ${rama}`,
+            origen: `${origenLanding ? `${origenLanding} (web de Elena)` : 'Web de Elena'} · ${rama}`,
             perfil: diag.perfil,
             url: window.location.href,
             referrer: document.referrer || '',
@@ -147,6 +150,7 @@ export default function Autodiagnostico({ onEstado }) {
       setResultado({ rama, ...diag })
       setEstado('ok')
       onEstado?.('ok')
+      if (destino) setTimeout(() => { window.location.href = destino }, 1400)
     } catch {
       setEstado('error')
       setError('No hemos podido enviar tus respuestas. Revisa tu conexión e inténtalo de nuevo.')
@@ -155,6 +159,19 @@ export default function Autodiagnostico({ onEstado }) {
 
   const primerNombre = nombre.trim().split(/\s+/)[0] || ''
   const calendlyUrl = `${CALENDLY}?name=${encodeURIComponent(nombre.trim())}&email=${encodeURIComponent(email.trim())}`
+
+  // ── Enviado con destino: se le lleva allí ─────────────────────────────────
+  if (estado === 'ok' && destino) {
+    return (
+      <div className="ef-card ef-res" ref={tarjeta}>
+        <span className="ef-res__marca"><IcoCheck /></span>
+        <p className="ef-eyebrow ef-res__hola">Gracias{primerNombre ? `, ${primerNombre}` : ''}</p>
+        <h3 className="ef-h3" ref={titulo} tabIndex={-1}>Te llevamos a la formación gratuita…</h3>
+        <p className="ef-p">Elena leerá tus respuestas. Si la página no cambia en unos segundos, entra desde aquí:</p>
+        <a className="ef-btn ef-btn--full ef-res__cta" href={destino}>Entrar en la comunidad <IcoFlecha /></a>
+      </div>
+    )
+  }
 
   // ── Resultado ──────────────────────────────────────────────────────────────
   if (estado === 'ok' && resultado) {
@@ -168,8 +185,8 @@ export default function Autodiagnostico({ onEstado }) {
             <h3 className="ef-h3" ref={titulo} tabIndex={-1}>{resultado.lectura.titulo}</h3>
             <p className="ef-p">{resultado.lectura.texto}</p>
             <div className="ef-res__est">
-              <p className="ef-mini">Tu punto de partida en el recorrido</p>
-              <p className="ef-res__n">Estación {dos(resultado.estacion.n)}</p>
+              <p className="ef-mini">Tu punto de partida en el Método CENTRO</p>
+              <p className="ef-res__n">{resultado.estacion.letra} · {dos(resultado.estacion.n)} de 06</p>
               <p className="ef-res__t">{resultado.estacion.nombre}</p>
               <p className="ef-res__q">«{resultado.estacion.pregunta}»</p>
               {resultado.conLiderazgo ? (
@@ -244,7 +261,7 @@ export default function Autodiagnostico({ onEstado }) {
             <h3 className="ef-wiz__q" ref={titulo} tabIndex={-1}>
               {rama === 'empresa' ? '¿A quién enviamos la orientación?' : '¿Dónde te enviamos el siguiente paso?'}
             </h3>
-            <p className="ef-wiz__sub">Al enviarlo verás tu lectura y podrás reservar la conversación.</p>
+            <p className="ef-wiz__sub">{destino ? 'Al enviarlo entrarás en la formación gratuita, en la comunidad de Elena.' : 'Al enviarlo verás tu lectura y podrás reservar la conversación.'}</p>
             <div className="ef-datos">
               <div className="ef-field">
                 <label htmlFor="ef-nombre">Nombre</label>
@@ -283,7 +300,7 @@ export default function Autodiagnostico({ onEstado }) {
               </span>
             </label>
             <button className="ef-btn ef-btn--full" type="submit" disabled={estado === 'enviando'}>
-              {estado === 'enviando' ? 'Enviando…' : <>Ver mi lectura <IcoFlecha /></>}
+              {estado === 'enviando' ? 'Enviando…' : <>{destino ? 'Entrar en la formación' : 'Ver mi lectura'} <IcoFlecha /></>}
             </button>
             {intento && faltan.length ? (
               <p className="ef-falta" role="alert">Para enviarlo te falta: {enLista(faltan.map((f) => f.txt))}.</p>
