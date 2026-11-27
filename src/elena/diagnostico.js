@@ -16,7 +16,9 @@
 // perfil: los avatares de Elena —Rodri (el líder en primera línea), Laura (la
 // persona en revisión, en momento silencioso o de impacto)— más la alta
 // dirección y los perfiles de empresa. El perfil va al CRM; quien responde ve
-// una lectura en lenguaje normal, nunca el nombre del avatar.
+// una lectura en lenguaje normal, nunca el nombre del avatar. Las lecturas no
+// nombran el siguiente paso: ese es uno solo y lo fija SIGUIENTE_PASO
+// (contenido.js).
 //
 // Una condición `si` solo puede mirar respuestas ANTERIORES de su rama: así
 // avanzar nunca cambia las preguntas que ya quedaron atrás.
@@ -408,20 +410,20 @@ export const valorDe = (op) => (typeof op === 'string' ? op : op.v)
 
 const LECTURAS = {
   alta: {
-    titulo: 'Una conversación de par a par',
-    texto: 'Desde la dirección general se decide a menudo en soledad y con poco tiempo para mirarse. Elena ha estado en un comité de dirección y en un consejo: la conversación parte de ahí.',
+    titulo: 'De par a par',
+    texto: 'Desde la dirección general se decide a menudo en soledad y con poco tiempo para mirarse. Elena ha estado en un comité de dirección y en un consejo: su acompañamiento parte de ahí.',
   },
   lider: {
     titulo: 'Tu manera de dirigir y tu vida, en la misma conversación',
-    texto: 'En tu situación es habitual seguir respondiendo a todo mientras algo se resiente. La primera conversación sirve para identificar el patrón y llevarlo a una situación real de tu equipo.',
+    texto: 'En tu situación es habitual seguir respondiendo a todo mientras algo se resiente. El primer paso es identificar el patrón y llevarlo a una situación real de tu equipo.',
   },
   nuevo: {
     titulo: 'Una responsabilidad nueva pide otra forma de dirigir',
-    texto: 'Lo que te trajo hasta aquí no siempre es lo que te sostiene en el puesto nuevo. La primera conversación sirve para ver qué conservar y qué cambiar antes de que se convierta en costumbre.',
+    texto: 'Lo que te trajo hasta aquí no siempre es lo que te sostiene en el puesto nuevo. El primer paso es ver qué conservar y qué cambiar antes de que se convierta en costumbre.',
   },
   fundador: {
     titulo: 'Cuando el proyecto es tuyo, todo va junto',
-    texto: 'En un negocio propio tu vida y tu manera de dirigir son difíciles de separar. La primera conversación sirve para ver dónde se cruzan y por dónde empezar.',
+    texto: 'En un negocio propio tu vida y tu manera de dirigir son difíciles de separar. El primer paso es ver dónde se cruzan y por dónde empezar.',
   },
   silencioso: {
     titulo: 'Cuando algo no encaja y aún no tiene nombre',
@@ -429,7 +431,7 @@ const LECTURAS = {
   },
   impacto: {
     titulo: 'Cuando una situación impide seguir igual',
-    texto: 'Conviene no decidir con prisa ni quedarse quieto. La primera conversación sirve para ordenar qué está pasando y qué va primero.',
+    texto: 'Conviene no decidir con prisa ni quedarse quieto. El primer paso es ordenar qué está pasando y qué va primero.',
   },
 }
 

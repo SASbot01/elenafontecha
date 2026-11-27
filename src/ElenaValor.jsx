@@ -1,30 +1,37 @@
 import { useEffect, useRef, useState } from 'react'
 import './elena/elena.css'
 import {
-  VIDEO_EMBED, REDES, PRIVACIDAD, PREGUNTA_GANCHO,
-  PARA_TI, NO_ES_PARA_TI, CENTRO, METODO, DIMENSIONES, CIFRAS, CREDENCIALES, TRAYECTORIA, PASOS, FAQ,
+  VIDEO_SRC, VIDEO_POSTER, VIDEO_MINUTOS, VIDEO_EMBED, PREGUNTA_GANCHO, CTA, CTA_BAJO,
+  TE_LLEVAS, PARA_TI, NO_ES_PARA_TI, CIFRAS, TRAYECTORIA,
 } from './elena/contenido'
 import Autodiagnostico from './elena/Autodiagnostico.jsx'
-import Rueda from './elena/Rueda.jsx'
-import { dos, ir, IcoPlay, IcoCheck, IcoFlecha } from './elena/comun.jsx'
+import { dos, IcoPlay, IcoCheck, IcoFlecha } from './elena/comun.jsx'
 
-// Landing VSL de Elena Fontecha (repo SASbot01/elenafontecha).
+// Embudo de Elena Fontecha (repo SASbot01/elenafontecha): un solo camino.
 //
-// Arriba, su pregunta central de gancho con su retrato; luego el vídeo (VSL),
-// para quién es, la idea de vida + liderazgo integrados, el Método CENTRO
-// (rueda interactiva), quién es Elena y el autodiagnóstico, que capta el
-// lead y le da el siguiente paso: reservar la primera conversación gratuita en
-// su Calendly, con nombre y correo ya rellenos.
+//   ① Landing: el vídeo (una única VSL) y UN botón, repetido.
+//   ② Autodiagnóstico: a pantalla completa, una pregunta por pantalla.
+//   ③ La lectura: su resultado y un único siguiente paso.
+//
+// Reglas del embudo (no romperlas al añadir cosas):
+// · Lo primero que se ve tiene que bastar para convertir: titular, vídeo y
+//   botón caben sin hacer scroll. Lo de debajo solo resuelve dudas.
+// · Un único botón en toda la landing (CTA). Nada de «ver vídeo» + «hacer el
+//   autodiagnóstico»: el vídeo ya está delante.
+// · Sin menú en la cabecera y sin enlaces en el pie: nada que saque a la
+//   persona del camino. La política de privacidad se enlaza donde la ley la
+//   pide, en la casilla de consentimiento del formulario.
 //
 // El autodiagnóstico (./elena/Autodiagnostico.jsx) envía el lead al CRM de
-// Elena en HELM: pipeline «Funnel 1» (personas y empresas, cada una por su
-// etapa de entrada). Textos editables en ./elena/contenido.js; preguntas y ramas en
-// ./elena/diagnostico.js.
-//
-// Fotos: sesión de su web elenafontecha.com, recortadas en public/elena/.
+// Elena en HELM (pipeline «Funnel 1»). Textos en ./elena/contenido.js;
+// preguntas y ramas en ./elena/diagnostico.js.
 
 const IMG = '/elena'
 const ANIO = new Date().getFullYear()
+// El autodiagnóstico tiene su propia dirección: sirve para enlazarlo directo
+// (correos, Skool) y para que «atrás» en el navegador vuelva a la landing.
+const HASH = '#autodiagnostico'
+const enQuiz = () => window.location.hash === HASH
 
 // Aparición suave de los bloques marcados con data-ap al entrar en pantalla.
 function useAparecer(ref) {
@@ -48,12 +55,42 @@ function useAparecer(ref) {
   }, [ref])
 }
 
-function Video() {
-  const [play, setPlay] = useState(false)
+// El vídeo: archivo propio con los controles del navegador (sin enlaces de
+// salida). Hasta que se le da al play se ve el póster con un botón grande.
+function Video({ refVideo }) {
+  const [empezado, setEmpezado] = useState(false)
+
+  if (VIDEO_SRC) {
+    return (
+      <div className="ef-video">
+        <video
+          ref={refVideo}
+          src={VIDEO_SRC}
+          poster={VIDEO_POSTER}
+          controls={empezado}
+          playsInline
+          preload="metadata"
+          onPlay={() => setEmpezado(true)}
+        />
+        {empezado ? null : (
+          <button
+            type="button"
+            className="ef-video__poster"
+            onClick={() => refVideo.current?.play()}
+            aria-label="Reproducir el vídeo de Elena Fontecha"
+          >
+            <span className="ef-video__play"><IcoPlay /></span>
+            <span className="ef-video__dur">{VIDEO_MINUTOS} min</span>
+          </button>
+        )}
+      </div>
+    )
+  }
+
   const src = VIDEO_EMBED ? `${VIDEO_EMBED}${VIDEO_EMBED.includes('?') ? '&' : '?'}autoplay=1&rel=0` : ''
   return (
     <div className="ef-video">
-      {play && src ? (
+      {empezado && src ? (
         <iframe
           src={src}
           title="Elena Fontecha"
@@ -64,408 +101,232 @@ function Video() {
         <button
           type="button"
           className={`ef-video__poster${VIDEO_EMBED ? '' : ' is-pronto'}`}
-          onClick={() => VIDEO_EMBED && setPlay(true)}
+          onClick={() => VIDEO_EMBED && setEmpezado(true)}
           aria-label={VIDEO_EMBED ? 'Reproducir el vídeo de Elena Fontecha' : 'El vídeo de Elena Fontecha estará disponible muy pronto'}
         >
-          <img src={`${IMG}/arco-16x9.webp`} alt="" loading="lazy" width="1600" height="900" />
+          <img src={`${IMG}/arco-16x9.webp`} alt="" width="1600" height="900" />
           <span className="ef-video__velo" />
           <span className="ef-video__play"><IcoPlay /></span>
-          <span className="ef-video__rotulo">
-            <span className="ef-tag">{VIDEO_EMBED ? 'Dale al play' : 'El vídeo, muy pronto'}</span>
-          </span>
+          {VIDEO_EMBED ? null : <span className="ef-video__rotulo"><span className="ef-tag">El vídeo, muy pronto</span></span>}
         </button>
       )}
     </div>
   )
 }
 
+// El único botón de la landing, con su línea de debajo.
+function Cta({ onClick, claro = false }) {
+  return (
+    <div className="ef-cta">
+      <button type="button" className={`ef-btn ef-btn--xl${claro ? ' ef-btn--claro' : ''}`} onClick={onClick}>
+        {CTA} <IcoFlecha />
+      </button>
+      <p className="ef-cta__bajo">{CTA_BAJO}</p>
+    </div>
+  )
+}
+
 export default function ElenaValor() {
   const raiz = useRef(null)
-  const [estado, setEstado] = useState('form') // form | ok: lo avisa el autodiagnóstico
-  const [activa, setActiva] = useState(0)
-  const [conSombra, setConSombra] = useState(false)
+  const video = useRef(null)
+  const [quiz, setQuiz] = useState(enQuiz) // false = landing · true = autodiagnóstico
   const [pasadoHero, setPasadoHero] = useState(false)
-  const [formEnPantalla, setFormEnPantalla] = useState(false)
 
   useAparecer(raiz)
 
   useEffect(() => {
     const tituloAntes = document.title
     document.title = 'Elena Fontecha · Desarrollo personal y liderazgo, integrados'
-    const meta = document.querySelector('meta[name="description"]')
-    const descAntes = meta?.getAttribute('content')
-    meta?.setAttribute('content', 'Desarrollo personal y liderazgo, integrados. Un autodiagnóstico que se adapta a ti o a tu empresa y una primera conversación gratuita con Elena Fontecha.')
+    return () => { document.title = tituloAntes }
+  }, [])
+
+  // «Atrás» y «adelante» del navegador cambian entre landing y autodiagnóstico.
+  useEffect(() => {
+    const alCambiar = () => setQuiz(enQuiz())
+    window.addEventListener('popstate', alCambiar)
+    window.addEventListener('hashchange', alCambiar)
     return () => {
-      document.title = tituloAntes
-      if (meta && descAntes != null) meta.setAttribute('content', descAntes)
+      window.removeEventListener('popstate', alCambiar)
+      window.removeEventListener('hashchange', alCambiar)
     }
   }, [])
 
+  // Al cambiar de pantalla se empieza arriba (no en la carga: ahí manda el navegador).
+  const primera = useRef(true)
   useEffect(() => {
-    const alScroll = () => {
-      setConSombra(window.scrollY > 8)
-      // La barra fija de móvil no duplica el botón del hero: sale al pasarlo.
-      setPasadoHero(window.scrollY > window.innerHeight * 0.85)
-    }
+    if (primera.current) { primera.current = false; return }
+    window.scrollTo(0, 0)
+  }, [quiz])
+
+  // La barra fija de móvil no duplica el botón del hero: sale al pasarlo.
+  useEffect(() => {
+    const alScroll = () => setPasadoHero(window.scrollY > window.innerHeight * 0.7)
     alScroll()
     window.addEventListener('scroll', alScroll, { passive: true })
     return () => window.removeEventListener('scroll', alScroll)
   }, [])
 
-  // La barra fija de móvil se esconde cuando el formulario ya está a la vista.
-  useEffect(() => {
-    const el = document.getElementById('diagnostico')
-    if (!el || !('IntersectionObserver' in window)) return undefined
-    const io = new IntersectionObserver(([e]) => setFormEnPantalla(e.isIntersecting), { threshold: 0.05 })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
+  // Si al autodiagnóstico se ha llegado pulsando el botón, «atrás» deshace ese
+  // paso; si se entró directo por su enlace, se cambia la dirección sin salir.
+  const empujado = useRef(false)
 
-  const e = CENTRO[activa]
+  function empezar() {
+    video.current?.pause()
+    if (!enQuiz()) { window.history.pushState(null, '', HASH); empujado.current = true }
+    setQuiz(true)
+  }
+
+  // «Atrás» en la primera pregunta: de vuelta a la landing (y al vídeo).
+  function volver() {
+    if (empujado.current) { empujado.current = false; window.history.back(); return }
+    window.history.replaceState(null, '', window.location.pathname + window.location.search)
+    setQuiz(false)
+  }
 
   return (
     <div className="ef-root" ref={raiz}>
-      {/* ── Cabecera ─────────────────────────────────────────────────── */}
-      <header className={`ef-header${conSombra ? ' is-sombra' : ''}`}>
-        <div className="ef-wrap ef-header__in">
-          <button type="button" className="ef-wordmark" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            Elena Fontecha
-          </button>
-          <nav className="ef-nav" aria-label="Secciones">
-            <button type="button" onClick={() => ir('video')}>El vídeo</button>
-            <button type="button" onClick={() => ir('metodo')}>{METODO}</button>
-            <button type="button" onClick={() => ir('elena')}>Quién es Elena</button>
-            <button type="button" onClick={() => ir('preguntas')}>Preguntas</button>
-          </nav>
-          <button type="button" className="ef-btn ef-btn--sm" onClick={() => ir('diagnostico')}>Autodiagnóstico</button>
+      {/* Cabecera: solo el nombre. Sin menú ni botones. */}
+      <header className="ef-top">
+        <div className="ef-wrap">
+          <span className="ef-wordmark">Elena Fontecha</span>
         </div>
       </header>
 
-      {/* ── Hero: la pregunta central ────────────────────────────────── */}
-      <section className="ef-hero">
-        <div className="ef-wrap ef-hero__grid">
-          <div className="ef-hero__txt">
-            <p className="ef-eyebrow">Desarrollo personal y liderazgo, integrados</p>
-            <h1 className="ef-h1">
+      {/* ── ① Landing ────────────────────────────────────────────────── */}
+      <div hidden={quiz}>
+        {/* Lo que se ve sin hacer scroll: titular, vídeo y el botón. */}
+        <section className="ef-vsl">
+          <div className="ef-wrap ef-vsl__in">
+            <p className="ef-vsl__pre">Para quien funciona bien y quiere revisar el rumbo</p>
+            <h1 className="ef-vsl__h1">
               Acompaño a personas y equipos a decidir qué quieren conseguir <em>y a encontrar su manera de hacerlo.</em>
             </h1>
-            <p className="ef-lead">
-              Se puede construir una trayectoria sólida y una vida llena de compromisos sin
-              detenerse a comprobar si seguimos queriendo lo que construimos. Una decisión puede
-              tener sentido por separado y, sin embargo, sumar a un conjunto que ya no responde a
-              nuestras prioridades.
+            <p className="ef-vsl__sub">
+              <span className="ef-vsl__sub-largo">
+                Se puede construir una trayectoria sólida sin detenerse a comprobar si seguimos
+                queriendo lo que construimos.{' '}
+              </span>
+              Mira el vídeo y haz el autodiagnóstico.
             </p>
-            <div className="ef-hero__ctas">
-              <button type="button" className="ef-btn" onClick={() => ir('diagnostico')}>
-                Hacer el autodiagnóstico <IcoFlecha />
-              </button>
-              <button type="button" className="ef-btn ef-btn--ghost" onClick={() => ir('video')}>
-                <IcoPlay /> Ver el vídeo
-              </button>
+            <div className="ef-vsl__video"><Video refVideo={video} /></div>
+            <Cta onClick={empezar} />
+            <p className="ef-vsl__cred">
+              <strong>Elena Fontecha.</strong> +25 años de trayectoria directiva. Ex Directora General
+              Adjunta Ejecutiva y Secretaria del Consejo de Administración de PortAventura.
+            </p>
+          </div>
+        </section>
+
+        <div className="ef-franja" aria-label="Trayectoria">
+          <div className="ef-wrap ef-franja__in">
+            <span className="ef-franja__k">Trayectoria</span>
+            {TRAYECTORIA.map((t) => <span key={t} className="ef-franja__v">{t}</span>)}
+          </div>
+        </div>
+
+        {/* Bloque 1 · Qué te llevas */}
+        <section className="ef-section">
+          <div className="ef-wrap">
+            <div className="ef-centro" data-ap>
+              <p className="ef-eyebrow">Qué te llevas</p>
+              <h2 className="ef-h2">Tu lectura, <em>en unos cinco minutos.</em></h2>
             </div>
-            <p className="ef-hero__cred">
-              <strong>+25 años de trayectoria directiva.</strong> Ex Directora General Adjunta Ejecutiva y
-              Secretaria del Consejo de Administración de PortAventura.
-            </p>
-          </div>
-          <figure className="ef-hero__foto">
-            <span className="ef-hero__bloque" aria-hidden="true" />
-            <img src={`${IMG}/retrato.webp`} alt="Elena Fontecha" width="640" height="800" fetchPriority="high" />
-            <figcaption className="ef-hero__tag">
-              <span className="ef-tag">No hay desarrollo profesional sin desarrollo personal.</span>
-            </figcaption>
-          </figure>
-        </div>
-      </section>
-
-      {/* ── Trayectoria (franja) ─────────────────────────────────────── */}
-      <div className="ef-franja" aria-label="Trayectoria">
-        <div className="ef-wrap ef-franja__in">
-          <span className="ef-franja__k">Trayectoria</span>
-          {TRAYECTORIA.map((t) => <span key={t} className="ef-franja__v">{t}</span>)}
-        </div>
-      </div>
-
-      {/* ── El vídeo (VSL) ───────────────────────────────────────────── */}
-      <section className="ef-oscuro" id="video">
-        <div className="ef-wrap">
-          <div className="ef-centro ef-oscuro__head" data-ap>
-            <p className="ef-eyebrow ef-eyebrow--claro">El vídeo</p>
-            <h2 className="ef-h2 ef-h2--claro">Antes de responder, <em>escúchala.</em></h2>
-            <p className="ef-p ef-p--claro">
-              En unos minutos, Elena cuenta para quién es este trabajo y cómo lo plantea.
-            </p>
-          </div>
-          <div className="ef-oscuro__video" data-ap><Video /></div>
-          <div className="ef-centro">
-            <button type="button" className="ef-btn ef-btn--claro" onClick={() => ir('diagnostico')}>
-              Ir al autodiagnóstico <IcoFlecha />
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Para quién ───────────────────────────────────────────────── */}
-      <section className="ef-section" id="para-quien">
-        <div className="ef-wrap ef-split">
-          <div className="ef-split__a" data-ap>
-            <p className="ef-eyebrow">Para quién es</p>
-            <h2 className="ef-h2">Para quien funciona bien y, aun así, <em>quiere revisar el rumbo.</em></h2>
-            <p className="ef-p">
-              No hace falta estar en crisis. Este trabajo sirve tanto para confirmar lo que quieres
-              conservar como para abrir cambios pequeños o profundos.
-            </p>
-          </div>
-          <div className="ef-split__b" data-ap>
-            <ul className="ef-check">
-              {PARA_TI.map((t) => (
-                <li key={t}><span className="ef-check__i"><IcoCheck /></span><span>{t}</span></li>
+            <ol className="ef-pasos" data-ap>
+              {TE_LLEVAS.map(([t, d], i) => (
+                <li key={t}>
+                  <span className="ef-pasos__n">{dos(i + 1)}</span>
+                  <p className="ef-pasos__t">{t}</p>
+                  <p className="ef-pasos__d">{d}</p>
+                </li>
               ))}
-            </ul>
-            <div className="ef-nop">
-              <p className="ef-mini">No es para ti si…</p>
-              <ul>{NO_ES_PARA_TI.map((t) => <li key={t}>{t}</li>)}</ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── La idea: una vida integrada ──────────────────────────────── */}
-      <section className="ef-section ef-section--rosa">
-        <div className="ef-wrap">
-          <div className="ef-centro ef-estrecho" data-ap>
-            <p className="ef-eyebrow">La idea</p>
-            <h2 className="ef-h2">Una persona, <em>una vida integrada.</em></h2>
-            <p className="ef-p">
-              La manera de comprendernos, relacionarnos y afrontar lo que nos pasa interviene en
-              cómo dirigimos. Y las condiciones de trabajo, los equipos y las organizaciones
-              influyen en nuestra forma de vivir. Por eso aquí se trabajan juntos, desde el
-              principio.
-            </p>
-          </div>
-          <div className="ef-caso" data-ap>
-            <div className="ef-caso__sit">
-              <p className="ef-mini">Un caso para entenderlo</p>
-              <p className="ef-caso__txt">
-                Quieres recuperar tiempo y autonomía, pero concentras decisiones porque sientes que
-                debes estar disponible para todo.
-              </p>
-            </div>
-            <div className="ef-caso__planos">
-              <div className="ef-caso__plano">
-                <p className="ef-caso__k"><span>01</span>El trabajo personal</p>
-                <p>Examina qué sostiene esa respuesta y qué quieres cambiar.</p>
-              </div>
-              <div className="ef-caso__plano">
-                <p className="ef-caso__k"><span>02</span>El trabajo de liderazgo</p>
-                <p>Revisa la delegación, los acuerdos, las capacidades del equipo y los incentivos que mantienen la dependencia.</p>
-              </div>
-            </div>
-            <p className="ef-caso__fin"><span className="ef-tag">Las acciones atienden a los dos planos.</span></p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Banda: el camino ─────────────────────────────────────────── */}
-      <section className="ef-camino" aria-label={METODO}>
-        <img src={`${IMG}/camino.webp`} alt="" loading="lazy" width="1920" height="900" />
-        <span className="ef-camino__velo" aria-hidden="true" />
-        <blockquote className="ef-camino__q" data-ap>
-          <p>El Método CENTRO organiza una conversación que puede retomarse <em>a lo largo de la vida.</em></p>
-        </blockquote>
-      </section>
-
-      {/* ── El Método CENTRO ─────────────────────────────────────────── */}
-      <section className="ef-section" id="metodo">
-        <div className="ef-wrap">
-          <div className="ef-metodo__head" data-ap>
-            <p className="ef-eyebrow">El método</p>
-            <h2 className="ef-h2">Método <span className="ef-centro-palabra">CENTRO</span>. <em>Seis pasos que miran a tu vida y a tu manera de dirigir.</em></h2>
-            <p className="ef-p">
-              <strong>C</strong>onocerse, <strong>E</strong>legir tu rumbo, <strong>N</strong>ombrar tus sistemas,{' '}
-              <strong>T</strong>razar tu plan, <strong>R</strong>esolver y actuar y <strong>O</strong>bservar y ajustar.
-              Un ciclo: su orden ayuda a comprender, pero admite retornos y distintos puntos de
-              entrada. En el centro, la persona en su realidad actual, con cuatro dimensiones
-              ({DIMENSIONES.join(', ').toLowerCase()}) y lo social atravesándolas todas.
-            </p>
-          </div>
-          <div className="ef-metodo__grid">
-            <div className="ef-metodo__rueda" data-ap>
-              <Rueda activa={activa} setActiva={setActiva} />
-              <p className="ef-metodo__hint">Pulsa una letra</p>
-            </div>
-            <ol className="ef-est" data-ap>
-              {CENTRO.map((est, i) => {
-                const on = i === activa
-                return (
-                  <li key={est.nombre} className={`ef-est__item${on ? ' is-on' : ''}`}>
-                    <button type="button" className="ef-est__btn" onClick={() => setActiva(i)} aria-expanded={on}>
-                      <span className="ef-est__n">{est.letra}</span>
-                      <span className="ef-est__t">{est.nombre}</span>
-                      <span className="ef-est__mas" aria-hidden="true" />
-                    </button>
-                    {on ? (
-                      <div className="ef-est__body">
-                        <p className="ef-est__q">«{e.pregunta}»</p>
-                        <div className="ef-est__planos">
-                          <div>
-                            <p className="ef-mini">En tu vida</p>
-                            <p>{e.vida}</p>
-                          </div>
-                          <div>
-                            <p className="ef-mini">En tu liderazgo · {e.liderazgo}</p>
-                            <p>{e.liderazgoTxt}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ) : null}
-                  </li>
-                )
-              })}
             </ol>
+            <Cta onClick={empezar} />
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ── Quién es Elena ───────────────────────────────────────────── */}
-      <section className="ef-section ef-section--crema" id="elena">
-        <div className="ef-wrap ef-autor">
-          <figure className="ef-autor__foto" data-ap>
-            <img src={`${IMG}/de-pie-4x5.webp`} alt="Elena Fontecha" loading="lazy" width="720" height="900" />
-            <figcaption className="ef-autor__pie"><span className="ef-tag">Coach, mentora y senior advisor</span></figcaption>
-          </figure>
-          <div className="ef-autor__txt" data-ap>
-            <p className="ef-eyebrow">Quién acompaña</p>
-            <h2 className="ef-h2">Elena <em>Fontecha</em></h2>
-            <p className="ef-p">
-              Durante más de 25 años he dirigido equipos y liderado cambios. Fui Directora General
-              Adjunta Ejecutiva y Secretaria del Consejo de Administración de PortAventura, diseñé el
-              área de Gestión Patrimonial de Servihabitat y de Haya Real Estate, y fundé Elara
-              Asociados.
-            </p>
-            <p className="ef-p">
-              También pasé por un burnout que me enseñó, desde dentro, cómo las fortalezas de un
-              directivo pueden acabar jugando en su contra. Hoy acompaño a líderes y a personas que
-              funcionan, pero quieren revisar su rumbo, mirando a la vez a la persona, al equipo y al
-              negocio.
-            </p>
-            <blockquote className="ef-quote">«En la vida corporativa no hace falta sufrir tanto.»</blockquote>
-            <div className="ef-cifras">
-              {CIFRAS.map((c) => (
-                <div key={c.t} className="ef-cifra">
-                  <span className="ef-cifra__n">{c.n}</span>
-                  <span className="ef-cifra__t">{c.t}</span>
-                </div>
-              ))}
+        {/* Bloque 2 · Quién acompaña (la prueba) */}
+        <section className="ef-section ef-section--crema">
+          <div className="ef-wrap ef-autor">
+            <figure className="ef-autor__foto" data-ap>
+              <img src={`${IMG}/de-pie-4x5.webp`} alt="Elena Fontecha" loading="lazy" width="720" height="900" />
+              <figcaption className="ef-autor__pie"><span className="ef-tag">Coach, mentora y senior advisor</span></figcaption>
+            </figure>
+            <div className="ef-autor__txt" data-ap>
+              <p className="ef-eyebrow">Quién acompaña</p>
+              <h2 className="ef-h2">Elena <em>Fontecha</em></h2>
+              <p className="ef-p">
+                Durante más de 25 años he dirigido equipos y liderado cambios. Fui Directora General
+                Adjunta Ejecutiva y Secretaria del Consejo de Administración de PortAventura, diseñé el
+                área de Gestión Patrimonial de Servihabitat y de Haya Real Estate, y fundé Elara
+                Asociados.
+              </p>
+              <blockquote className="ef-quote">«En la vida corporativa no hace falta sufrir tanto.»</blockquote>
+              <div className="ef-cifras">
+                {CIFRAS.map((c) => (
+                  <div key={c.t} className="ef-cifra">
+                    <span className="ef-cifra__n">{c.n}</span>
+                    <span className="ef-cifra__t">{c.t}</span>
+                  </div>
+                ))}
+              </div>
+              <Cta onClick={empezar} />
             </div>
           </div>
-        </div>
-        <div className="ef-wrap">
-          <div className="ef-creds" data-ap>
-            <div>
-              <p className="ef-mini">Formación y acreditaciones</p>
-              <dl className="ef-creds__list">
-                {CREDENCIALES.map(([a, b]) => (
-                  <div key={a + b}><dt>{a}</dt><dd>{b}</dd></div>
-                ))}
-              </dl>
-            </div>
-            <div>
-              <p className="ef-mini">Hoy</p>
-              <p className="ef-creds__hoy">
-                Acompañamiento individual de desarrollo personal y de liderazgo, mentoría,
-                evaluación con el Leadership Circle Profile® y trabajo con equipos de dirección.
-                Patrona de la Fundación Mare Terra.
+        </section>
+
+        {/* Bloque 3 · Para quién es */}
+        <section className="ef-section">
+          <div className="ef-wrap ef-split">
+            <div className="ef-split__a" data-ap>
+              <p className="ef-eyebrow">Para quién es</p>
+              <h2 className="ef-h2">Para quien funciona bien y, aun así, <em>quiere revisar el rumbo.</em></h2>
+              <p className="ef-p">
+                No hace falta estar en crisis. Este trabajo sirve tanto para confirmar lo que quieres
+                conservar como para abrir cambios pequeños o profundos.
               </p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Cómo empieza + autodiagnóstico ───────────────────────────── */}
-      <section className="ef-section" id="diagnostico">
-        <div className="ef-wrap">
-          <div className="ef-centro" data-ap>
-            <p className="ef-eyebrow">Cómo empieza</p>
-            <h2 className="ef-h2">Tres pasos. <em>El primero, ahora.</em></h2>
-          </div>
-          <ol className="ef-pasos" data-ap>
-            {PASOS.map(([t, d], i) => (
-              <li key={t}>
-                <span className="ef-pasos__n">{dos(i + 1)}</span>
-                <p className="ef-pasos__t">{t}</p>
-                <p className="ef-pasos__d">{d}</p>
-              </li>
-            ))}
-          </ol>
-
-          <div className="ef-form-grid">
-            <aside className="ef-form-aside" data-ap>
-              <img src={`${IMG}/arco-4x5.webp`} alt="Elena Fontecha" loading="lazy" width="720" height="900" />
-              <p className="ef-form-aside__tag"><span className="ef-tag">Esto es una foto, no una sentencia.</span></p>
-            </aside>
-
-            <div id="diagnostico-tarjeta">
-              <Autodiagnostico onEstado={setEstado} />
+            <div className="ef-split__b" data-ap>
+              <ul className="ef-check">
+                {PARA_TI.map((t) => (
+                  <li key={t}><span className="ef-check__i"><IcoCheck /></span><span>{t}</span></li>
+                ))}
+              </ul>
+              <div className="ef-nop">
+                <p className="ef-mini">No es para ti si…</p>
+                <ul>{NO_ES_PARA_TI.map((t) => <li key={t}>{t}</li>)}</ul>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ── Preguntas frecuentes ─────────────────────────────────────── */}
-      <section className="ef-section ef-section--rosa" id="preguntas">
-        <div className="ef-wrap ef-estrecho">
-          <div className="ef-centro" data-ap>
-            <p className="ef-eyebrow">Preguntas</p>
-            <h2 className="ef-h2">Lo que suele preguntarse <em>antes de empezar.</em></h2>
+        {/* Cierre: la pregunta y, otra vez, el mismo botón */}
+        <section className="ef-final">
+          <div className="ef-wrap ef-centro" data-ap>
+            <p className="ef-final__q">«{PREGUNTA_GANCHO}»</p>
+            <Cta onClick={empezar} claro />
           </div>
-          <div className="ef-faq" data-ap>
-            {FAQ.map(([q, a]) => (
-              <details key={q}>
-                <summary>{q}<span className="ef-faq__i" aria-hidden="true" /></summary>
-                <p>{a}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ── Cierre ───────────────────────────────────────────────────── */}
-      <section className="ef-final">
-        <div className="ef-wrap ef-centro" data-ap>
-          <p className="ef-eyebrow ef-eyebrow--claro">La pregunta sigue ahí</p>
-          <p className="ef-final__q">«{PREGUNTA_GANCHO}»</p>
-          <p className="ef-p ef-p--claro">Si te ha hecho pararte, empieza por aquí.</p>
-          <button type="button" className="ef-btn ef-btn--claro" onClick={() => ir('diagnostico')}>
-            Hacer el autodiagnóstico <IcoFlecha />
+        {/* Barra fija en móvil: el mismo botón, siempre a mano al bajar */}
+        <div className={`ef-fija${pasadoHero ? '' : ' is-oculta'}`}>
+          <button type="button" className="ef-btn ef-btn--full" onClick={empezar}>
+            {CTA} <IcoFlecha />
           </button>
         </div>
-      </section>
-
-      <footer className="ef-footer">
-        <div className="ef-wrap ef-footer__in">
-          <div>
-            <span className="ef-wordmark ef-wordmark--pie">Elena Fontecha</span>
-            <p className="ef-footer__tag">Desarrollo personal y liderazgo</p>
-          </div>
-          <nav className="ef-footer__redes" aria-label="Redes">
-            {REDES.map((r) => (
-              <a key={r.url} href={r.url} target="_blank" rel="noopener noreferrer">{r.nombre}</a>
-            ))}
-          </nav>
-        </div>
-        <div className="ef-wrap ef-footer__legal">
-          <span>© {ANIO} Elena Fontecha</span>
-          <a href={PRIVACIDAD} target="_blank" rel="noopener noreferrer">Política de privacidad</a>
-        </div>
-      </footer>
-
-      {/* Barra fija en móvil: entre el hero y el formulario */}
-      <div className={`ef-fija${!pasadoHero || formEnPantalla || estado === 'ok' ? ' is-oculta' : ''}`}>
-        <button type="button" className="ef-btn ef-btn--full" onClick={() => ir('diagnostico')}>
-          Hacer el autodiagnóstico <IcoFlecha />
-        </button>
       </div>
+
+      {/* ── ② Autodiagnóstico y ③ la lectura ─────────────────────────── */}
+      {/* Montado siempre: si vuelve al vídeo, no pierde lo respondido. */}
+      <main className="ef-quiz" hidden={!quiz}>
+        <div className="ef-wrap ef-quiz__in">
+          <Autodiagnostico onSalir={volver} />
+        </div>
+      </main>
+
+      {/* Pie: sin enlaces. */}
+      <footer className="ef-pie">
+        <div className="ef-wrap">© {ANIO} Elena Fontecha · Desarrollo personal y liderazgo</div>
+      </footer>
     </div>
   )
 }
