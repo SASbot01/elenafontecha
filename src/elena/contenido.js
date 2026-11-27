@@ -30,13 +30,26 @@ export const CALENDLY_MINUTOS = 30
 export const SKOOL = 'https://www.skool.com/las-seis-estaciones-9783'
 // Adonde lleva la landing de la formación gratis al enviar el formulario.
 export const SKOOL_ABOUT = 'https://www.skool.com/las-seis-estaciones-9783/about'
-// El ÚNICO siguiente paso que se ofrece tras la lectura, por rama. Uno solo:
-// si hay dos botones, no se pulsa ninguno.
+// ── Tras el formulario ─────────────────────────────────────────────────────
+// 1) El lead magnet se entrega ahí mismo, en la web (no depende de que llegue
+//    un correo). `url` es un archivo de public/ (p. ej. '/descargas/guia.pdf')
+//    o un enlace. Mientras esté vacío, el bloque NO sale en la web publicada;
+//    en local se ve el hueco, marcado como pendiente.
+export const LEAD_MAGNET = {
+  titulo: 'Aquí tienes tu guía',
+  texto: 'Es tuya: ábrela ahora y guárdala para volver a ella cuando quieras.',
+  boton: 'Abrir la guía',
+  url: '',
+}
+// 2) El aviso: en cuántas horas contacta su equipo con quien envía el formulario.
+export const CONTACTO_HORAS = 24
+// 3) Un botón más, por rama, solo si se quiere (por defecto, ninguno: el
+//    siguiente paso es que su equipo contacta). Uno como mucho: si hay dos
+//    botones, no se pulsa ninguno.
+//   'contacto'     → sin botón
 //   'conversacion' → reservar en su Calendly (se abre dentro de la página)
 //   'comunidad'    → entrar en Skool
-// Es lo que Elena dice en el vídeo: para ti, la puerta de entrada es la
-// comunidad gratuita; para tu equipo o tu empresa, cuestionario y conversación.
-export const SIGUIENTE_PASO = { persona: 'comunidad', empresa: 'conversacion' }
+export const SIGUIENTE_PASO = { persona: 'contacto', empresa: 'contacto' }
 // Endpoint de formularios de HELM: guarda el lead en el CRM de Elena.
 export const API_FORMULARIOS = 'https://helm.s4sf.net/api/formularios'
 // ───────────────────────────────────────────────────────────────────────────
@@ -59,7 +72,7 @@ export const CTA_BAJO = 'Para ti o para tu equipo · Unos cinco minutos'
 export const TE_LLEVAS = [
   ['Una lectura de tu momento', 'Según lo que respondas, para ti o para tu equipo o tu empresa. Es una foto, no una sentencia.'],
   ['Por dónde empezar', 'Tu punto de partida en el Método CENTRO: cuál de sus seis pasos te pide más atención ahora.'],
-  ['Elena lo lee personalmente', 'No es un algoritmo ni un equipo: lo lee ella. Y tú sales con un único siguiente paso.'],
+  ['Elena lo lee personalmente', 'No es un algoritmo: tus respuestas las lee ella. Y en menos de 24 horas su equipo se pone en contacto contigo.'],
 ]
 
 // Las preguntas del autodiagnóstico (con sus ramas) viven en ./diagnostico.js.
@@ -138,4 +151,16 @@ export const CIFRAS = [
   { n: '3', t: 'grandes compañías: PortAventura, Servihabitat y Haya Real Estate' },
 ]
 
-export const TRAYECTORIA = ['PortAventura', 'Servihabitat', 'Haya Real Estate', 'Elara Asociados', 'Fundación Mare Terra']
+// Franja de trayectoria: el logo de cada casa, todos en un solo color (el
+// burdeos de la marca). `logo` es un archivo de public/elena/logos/ en negro
+// sobre transparente que se usa como máscara: el color lo pone el CSS.
+// `ancho` y `alto` son los del dibujo (dan la proporción) y `px` la altura a
+// la que se pinta, ajustada a ojo para que todos pesen parecido. Sin `logo`
+// sale el nombre en texto (Elara Asociados no tiene logo público).
+export const TRAYECTORIA = [
+  { nombre: 'PortAventura', logo: 'portaventura.svg', ancho: 171.5, alto: 150.4, px: 50 },
+  { nombre: 'Servihabitat', logo: 'servihabitat.svg', ancho: 120, alto: 20, px: 21 },
+  { nombre: 'Haya Real Estate', logo: 'haya-real-estate.svg', ancho: 54, alto: 89, px: 50 },
+  { nombre: 'Elara Asociados' },
+  { nombre: 'Fundación Mare Terra', logo: 'fundacion-mare-terra.png', ancho: 406, alto: 133, px: 40 },
+]
