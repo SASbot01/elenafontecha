@@ -4,14 +4,14 @@ Embudo de **Elena Fontecha** (desarrollo personal y liderazgo, integrados). Un s
 
 1. **Landing:** titular, el vídeo (una única VSL) y **un botón**, «Hacer el autodiagnóstico», repetido debajo de cada bloque.
 2. **Autodiagnóstico:** a pantalla completa, una pregunta por pantalla (dirección propia: `/#autodiagnostico`). Capta el lead.
-3. **La lectura:** su resultado y **un único siguiente paso**. Para una persona, entrar en la comunidad gratuita (Skool); para un equipo o una empresa, reservar la primera conversación, con su Calendly dentro de la página.
+3. **Tras el formulario**, en la misma pantalla: se entrega el **lead magnet** (ahí mismo, sin depender de un correo), se avisa de que **el equipo de Elena contacta en menos de 24 horas** y se enseña la lectura del autodiagnóstico. Sin más botones: el siguiente paso es ese contacto.
 
 ### Reglas del embudo
 
 No romperlas al añadir cosas:
 
 - **Lo primero que se ve tiene que bastar para convertir.** Titular, vídeo y botón caben sin hacer scroll, en móvil y en escritorio. Lo de debajo solo resuelve dudas.
-- **Un único botón.** Nada de «ver vídeo» + «hacer el autodiagnóstico»: el vídeo ya está delante. Tras la lectura, también un solo paso.
+- **Un único botón.** Nada de «ver vídeo» + «hacer el autodiagnóstico»: el vídeo ya está delante. Tras el formulario, como mucho una acción: abrir el lead magnet.
 - **Sin menú en la cabecera y sin enlaces en el pie.** Nada que saque a la persona del camino: ni redes, ni web, ni secciones. La política de privacidad se enlaza donde la ley la pide, en la casilla de consentimiento del formulario.
 - **Un solo vídeo.** El embudo no lleva más VSL en los pasos siguientes.
 
@@ -32,7 +32,9 @@ Es una web estática (Vite + React): se despliega tal cual en Vercel, sin variab
 | Quiero cambiar… | Archivo |
 |---|---|
 | Textos de la página, el botón (`CTA`), Calendly, Skool, **el vídeo** (`VIDEO_SRC`) | `src/elena/contenido.js` |
-| El siguiente paso tras la lectura, por rama (`SIGUIENTE_PASO`) | `src/elena/contenido.js` |
+| El lead magnet que se entrega tras el formulario (`LEAD_MAGNET`) y el plazo del aviso de contacto (`CONTACTO_HORAS`) | `src/elena/contenido.js` |
+| Un botón más tras el formulario, por rama: reservar en Calendly o entrar en Skool (`SIGUIENTE_PASO`; por defecto, ninguno) | `src/elena/contenido.js` |
+| La franja «Trayectoria» y sus logos (`TRAYECTORIA`) | `src/elena/contenido.js` y `public/elena/logos/` |
 | Preguntas, ramas y clasificación del autodiagnóstico | `src/elena/diagnostico.js` |
 | Estructura de la página | `src/ElenaValor.jsx` |
 | El Método CENTRO (letras, textos) y su rueda (hoy solo en la formación gratis) | `src/elena/contenido.js` (`CENTRO`) y `src/elena/Rueda.jsx` |
@@ -46,6 +48,14 @@ Es una web estática (Vite + React): se despliega tal cual en Vercel, sin variab
 **Marca de Elena:** burdeos `#4F1828`, Montserrat, fondo blanco y tono editorial anti-autoayuda.
 
 **Palabras prohibidas**, que no deben aparecer nunca: transformación, empoderamiento, potencial, reinvención, mejor versión, despertar, difuso, «por inercia», «ha dejado de elegir» y «herramientas» como etiqueta. Tampoco se usan testimonios hasta tener su permiso.
+
+## El lead magnet
+
+Se entrega en la pantalla que sale al enviar el formulario. Para ponerlo: deja el archivo en `public/` (por ejemplo `public/descargas/guia.pdf`) y rellena `LEAD_MAGNET` en `src/elena/contenido.js` con su `url` (`/descargas/guia.pdf`), el `titulo`, el `texto` y el texto del `boton`. Mientras `url` esté vacío, el bloque **no sale en la web publicada** (en local se ve el hueco, marcado como pendiente) y la pantalla se queda con el aviso de contacto y la lectura.
+
+## Los logos de la franja «Trayectoria»
+
+Cada logo está en `public/elena/logos/` en negro sobre transparente y se usa como máscara: el color (el burdeos de la marca) lo pone el CSS (`.ef-franja__logo`), así todos se ven como un conjunto. Salen de la web oficial de cada casa (PortAventura World, Servihabitat, Mare Terra Fundació Mediterrània) y, el de Haya Real Estate, de la copia archivada de su web corporativa (la marca se integró en Intrum). Elara Asociados va en texto: no tiene logo público. Para añadir uno: archivo de un solo color con fondo transparente y una línea en `TRAYECTORIA` con su proporción (`ancho`, `alto`) y la altura a la que se pinta (`px`).
 
 ## El vídeo
 
@@ -92,5 +102,6 @@ Los dos formularios **ya están creados en producción** con las preguntas actua
 
 ## Pendiente
 
+- **El lead magnet:** falta el archivo. Al tenerlo, rellenar `LEAD_MAGNET` (ver arriba).
 - Ajustar `VITE_SITE_URL` al dominio definitivo.
 - Medición: no hay píxel. Al ponerlo, los eventos van en la carga (vista), el envío del autodiagnóstico (lead) y la reserva en Calendly (`calendly.event_scheduled`, que ya se escucha en `Autodiagnostico.jsx`).

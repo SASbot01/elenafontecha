@@ -147,9 +147,14 @@
 
 /* ── Franja de trayectoria ───────────────────────────────────────────────── */
 .ef-franja{ border-top:1px solid var(--linea); border-bottom:1px solid var(--linea); background:var(--crema); }
-.ef-franja__in{ display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:12px 38px; padding-top:20px; padding-bottom:20px; }
+.ef-franja__in{ display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:16px 44px; padding-top:18px; padding-bottom:18px; }
 .ef-franja__k{ font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--burdeos); }
-.ef-franja__v{ font-size:12.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--tinta-2); }
+.ef-franja__v{ font-size:12.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--burdeos); }
+/* Logos en un solo color: el archivo hace de máscara y el color es el de la marca */
+.ef-franja__logo{
+  display:block; flex:none; height:var(--alto); background:var(--burdeos);
+  -webkit-mask:var(--logo) center / contain no-repeat; mask:var(--logo) center / contain no-repeat;
+}
 
 /* ── Landing: cabecera sin menú y hero con la VSL ────────────────────────────
  * Titular, vídeo y botón tienen que caber sin hacer scroll: el vídeo se
@@ -387,7 +392,17 @@
 .ef-res__rt{ margin:0; font-size:16.5px; font-weight:600; color:var(--tinta); }
 .ef-res__rx{ margin:6px 0 0; font-size:14.5px; line-height:1.62; color:var(--tinta-2); }
 .ef-res__cta{ margin-top:28px; }
-/* El único siguiente paso, al final de la lectura */
+/* Tras el formulario: el lead magnet, el aviso de contacto y la lectura */
+.ef-res__regalo .ef-btn{ margin-top:24px; }
+.ef-res__pendiente{ margin:20px 0 0; padding:14px 16px; border:1px dashed var(--burdeos); font-size:13.5px; line-height:1.55; color:var(--burdeos); }
+.ef-res__contacto{ margin-top:26px; padding:18px 20px; background:var(--crema); border:1px solid var(--linea-2); }
+.ef-res__hola + .ef-res__contacto{ margin-top:4px; }
+.ef-res__contacto .ef-mini{ margin-bottom:6px; }
+.ef-res__contacto p:last-child{ margin:0; font-size:16px; line-height:1.55; color:var(--tinta); }
+.ef-res__contacto strong{ font-weight:600; color:var(--burdeos); }
+.ef-res__lectura{ margin-top:34px; padding-top:28px; border-top:1px solid var(--linea); }
+.ef-res__lectura > .ef-mini{ margin-bottom:12px; }
+/* Botón opcional de siguiente paso, al final */
 .ef-res__paso{ margin-top:32px; padding-top:28px; border-top:1px solid var(--linea); text-align:center; }
 .ef-res__paso-t{ margin:0; font-size:21px; font-weight:600; line-height:1.3; color:var(--tinta); text-wrap:balance; }
 .ef-res__paso-d{ margin:8px auto 22px; max-width:52ch; font-size:15px; line-height:1.65; color:var(--tinta-2); }
@@ -456,7 +471,8 @@
   .ef-hero__bloque{ inset:22px -12px -16px 22px; }
   .ef-hero__tag{ left:-8px; bottom:24px; max-width:88%; }
   .ef-tag{ font-size:14px; }
-  .ef-franja__in{ gap:8px 22px; }
+  .ef-franja__in{ gap:14px 28px; }
+  .ef-franja__logo{ height:calc(var(--alto) * .84); }
   .ef-top{ padding-top:14px; }
   .ef-vsl{ padding:12px 0 40px; }
   .ef-vsl__pre{ font-size:10.5px; letter-spacing:.14em; margin-bottom:10px; }

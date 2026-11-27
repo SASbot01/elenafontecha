@@ -220,7 +220,17 @@ export default function ElenaValor() {
         <div className="ef-franja" aria-label="Trayectoria">
           <div className="ef-wrap ef-franja__in">
             <span className="ef-franja__k">Trayectoria</span>
-            {TRAYECTORIA.map((t) => <span key={t} className="ef-franja__v">{t}</span>)}
+            {TRAYECTORIA.map((t) => (t.logo ? (
+              <span
+                key={t.nombre}
+                className="ef-franja__logo"
+                role="img"
+                aria-label={t.nombre}
+                style={{ '--logo': `url(${IMG}/logos/${t.logo})`, '--alto': `${t.px}px`, aspectRatio: `${t.ancho} / ${t.alto}` }}
+              />
+            ) : (
+              <span key={t.nombre} className="ef-franja__v">{t.nombre}</span>
+            )))}
           </div>
         </div>
 

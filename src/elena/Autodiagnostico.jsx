@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { API_FORMULARIOS, CALENDLY, CALENDLY_MINUTOS, PRIVACIDAD, SKOOL, SIGUIENTE_PASO } from './contenido.js'
+import {
+  API_FORMULARIOS, CALENDLY, CALENDLY_MINUTOS, PRIVACIDAD, SKOOL, SIGUIENTE_PASO, LEAD_MAGNET, CONTACTO_HORAS,
+} from './contenido.js'
 import {
   PUERTA, RAMAS, ramaDe, preguntasVisibles, totalEstimado, texto, valorDe, diagnosticoPersona, diagnosticoEmpresa,
 } from './diagnostico.js'
@@ -11,10 +13,11 @@ import { dos, utmDeLaUrl, IcoCheck, IcoFlecha, IcoAtras } from './comun.jsx'
 // sus propias preguntas, que aparecen o cambian según lo ya respondido (todo
 // definido en diagnostico.js). Las de una opción avanzan solas al elegir; las
 // de varias y el texto libre, con «Continuar». El último paso pide el
-// contacto. Al enviar se calcula el perfil (avatar) para el CRM y se enseña
-// una lectura personalizada con UN único siguiente paso (SIGUIENTE_PASO en
-// contenido.js): reservar la conversación en su Calendly, que se abre dentro
-// de la página con nombre y correo ya rellenos, o entrar en su comunidad.
+// contacto. Al enviar se calcula el perfil (avatar) para el CRM y, en la misma
+// pantalla, se entrega el lead magnet (LEAD_MAGNET), se avisa de que su equipo
+// contacta en CONTACTO_HORAS horas y se enseña la lectura personalizada. Si
+// SIGUIENTE_PASO lo pide, se añade un único botón: reservar en su Calendly
+// (dentro de la página, con nombre y correo ya rellenos) o entrar en su comunidad.
 
 const TEXTO_CONSENT = 'Acepto que Elena Fontecha trate mis datos para ponerse en contacto conmigo sobre este autodiagnóstico, conforme a su política de privacidad.'
 const CONTACTO = { key: '__contacto', tipo: 'contacto' }
@@ -231,9 +234,11 @@ export default function Autodiagnostico({ onSalir, destino, origen: origenLandin
     )
   }
 
-  // ── Resultado: la lectura y un único siguiente paso ────────────────────────
+  // ── Tras el formulario: el lead magnet, el aviso de contacto y la lectura ──
   if (estado === 'ok' && resultado) {
-    const conversacion = SIGUIENTE_PASO[resultado.rama] === 'conversacion'
+    const paso = SIGUIENTE_PASO[resultado.rama]
+    // Sin archivo todavía, el bloque del lead magnet solo se ve en local.
+    const conLeadMagnet = Boolean(LEAD_MAGNET.url) || import.meta.env.DEV
 
     if (enAgenda) {
       return (
@@ -246,68 +251,96 @@ export default function Autodiagnostico({ onSalir, destino, origen: origenLandin
     return (
       <div className="ef-card ef-res" ref={tarjeta}>
         <span className="ef-res__marca"><IcoCheck /></span>
-        <p className="ef-eyebrow ef-res__hola">Gracias{primerNombre ? `, ${primerNombre}` : ''} · Tu lectura</p>
+        <p className="ef-eyebrow ef-res__hola">Gracias{primerNombre ? `, ${primerNombre}` : ''}</p>
 
-        {resultado.rama === 'persona' ? (
-          <>
-            <h3 className="ef-h3" ref={titulo} tabIndex={-1}>{resultado.lectura.titulo}</h3>
-            <p className="ef-p">{resultado.lectura.texto}</p>
-            <div className="ef-res__est">
-              <p className="ef-mini">Tu punto de partida en el Método CENTRO</p>
-              <p className="ef-res__n">{resultado.estacion.letra} · {dos(resultado.estacion.n)} de 06</p>
-              <p className="ef-res__t">{resultado.estacion.nombre}</p>
-              <p className="ef-res__q">«{resultado.estacion.pregunta}»</p>
-              {resultado.conLiderazgo ? (
-                <p className="ef-res__lid"><span>En tu liderazgo</span>{resultado.estacion.liderazgo}</p>
-              ) : null}
-            </div>
-            {resultado.dimension ? (
-              <p className="ef-res__dim">La dimensión que más pide atención: <strong>{resultado.dimension.toLowerCase()}</strong>.</p>
-            ) : null}
-            {resultado.alLimite ? (
-              <p className="ef-res__aviso">Has dicho que tu energía está al límite. Elena lo tendrá en cuenta antes que nada.</p>
-            ) : null}
-          </>
-        ) : (
-          <>
-            <h3 className="ef-h3" ref={titulo} tabIndex={-1}>
-              Por dónde empezaría Elena{empresa.trim() ? <> con <em>{empresa.trim()}</em></> : null}
-            </h3>
-            <ol className="ef-res__recs">
-              {resultado.recomendaciones.map((x, k) => (
-                <li key={x.titulo}>
-                  <span className="ef-res__rn">{dos(k + 1)}</span>
-                  <div><p className="ef-res__rt">{x.titulo}</p><p className="ef-res__rx">{x.texto}</p></div>
-                </li>
-              ))}
-            </ol>
-            <p className="ef-p ef-p--sm">Es una orientación: la propuesta se define en la conversación, con la situación real delante.</p>
-          </>
-        )}
+        {/* 1 · El lead magnet, entregado aquí mismo */}
+        {conLeadMagnet ? (
+          <div className="ef-res__regalo">
+            <h3 className="ef-h3" ref={titulo} tabIndex={-1}>{LEAD_MAGNET.titulo}</h3>
+            <p className="ef-p">{LEAD_MAGNET.texto}</p>
+            {LEAD_MAGNET.url ? (
+              <a className="ef-btn ef-btn--full ef-btn--xl" href={LEAD_MAGNET.url} target="_blank" rel="noopener noreferrer">
+                {LEAD_MAGNET.boton} <IcoFlecha />
+              </a>
+            ) : (
+              <p className="ef-res__pendiente">
+                Pendiente: aquí va el lead magnet. Falta su archivo (LEAD_MAGNET en contenido.js); hasta
+                entonces este bloque solo se ve en local, no en la web publicada.
+              </p>
+            )}
+          </div>
+        ) : null}
 
-        {/* El siguiente paso: uno solo. */}
-        <div className="ef-res__paso">
-          <p className="ef-mini">El siguiente paso</p>
-          {conversacion ? (
+        {/* 2 · Qué pasa ahora */}
+        <div className="ef-res__contacto">
+          <p className="ef-mini">Y ahora</p>
+          <p>
+            <strong>En menos de {CONTACTO_HORAS} horas</strong>, el equipo de Elena Fontecha se pondrá en contacto
+            contigo.
+          </p>
+        </div>
+
+        {/* 3 · La lectura */}
+        <div className="ef-res__lectura">
+          <p className="ef-mini">Tu lectura</p>
+          {resultado.rama === 'persona' ? (
             <>
-              <p className="ef-res__paso-t">Una primera conversación con Elena, gratuita</p>
-              <p className="ef-res__paso-d">Para entender tu momento y decidir si tiene sentido seguir, y si ella es la persona adecuada.</p>
-              <button type="button" className="ef-btn ef-btn--full ef-btn--xl" onClick={() => { tocado.current = true; setEnAgenda(true) }}>
-                Reservar mi conversación <IcoFlecha />
-              </button>
-              <p className="ef-cta__bajo">{CALENDLY_MINUTOS} minutos · Gratuita · Eliges día y hora aquí mismo</p>
+              <h3 className="ef-h3" ref={conLeadMagnet ? undefined : titulo} tabIndex={-1}>{resultado.lectura.titulo}</h3>
+              <p className="ef-p">{resultado.lectura.texto}</p>
+              <div className="ef-res__est">
+                <p className="ef-mini">Tu punto de partida en el Método CENTRO</p>
+                <p className="ef-res__n">{resultado.estacion.letra} · {dos(resultado.estacion.n)} de 06</p>
+                <p className="ef-res__t">{resultado.estacion.nombre}</p>
+                <p className="ef-res__q">«{resultado.estacion.pregunta}»</p>
+                {resultado.conLiderazgo ? (
+                  <p className="ef-res__lid"><span>En tu liderazgo</span>{resultado.estacion.liderazgo}</p>
+                ) : null}
+              </div>
+              {resultado.dimension ? (
+                <p className="ef-res__dim">La dimensión que más pide atención: <strong>{resultado.dimension.toLowerCase()}</strong>.</p>
+              ) : null}
+              {resultado.alLimite ? (
+                <p className="ef-res__aviso">Has dicho que tu energía está al límite. Elena lo tendrá en cuenta antes que nada.</p>
+              ) : null}
             </>
           ) : (
             <>
-              <p className="ef-res__paso-t">Entra en la comunidad de Elena, gratis</p>
-              <p className="ef-res__paso-d">Dos clases gratuitas y los cuadernos de trabajo del Método CENTRO, para empezar por tu punto de partida.</p>
-              <a className="ef-btn ef-btn--full ef-btn--xl" href={SKOOL} target="_blank" rel="noopener noreferrer">
-                Entrar en la comunidad <IcoFlecha />
-              </a>
-              <p className="ef-cta__bajo">Gratis · Se abre en Skool</p>
+              <h3 className="ef-h3" ref={conLeadMagnet ? undefined : titulo} tabIndex={-1}>
+                Por dónde empezaría Elena{empresa.trim() ? <> con <em>{empresa.trim()}</em></> : null}
+              </h3>
+              <ol className="ef-res__recs">
+                {resultado.recomendaciones.map((x, k) => (
+                  <li key={x.titulo}>
+                    <span className="ef-res__rn">{dos(k + 1)}</span>
+                    <div><p className="ef-res__rt">{x.titulo}</p><p className="ef-res__rx">{x.texto}</p></div>
+                  </li>
+                ))}
+              </ol>
+              <p className="ef-p ef-p--sm">Es una orientación: la propuesta se define en la conversación, con la situación real delante.</p>
             </>
           )}
         </div>
+
+        {/* Un botón más, solo si SIGUIENTE_PASO lo pide. */}
+        {paso === 'conversacion' ? (
+          <div className="ef-res__paso">
+            <p className="ef-res__paso-t">Una primera conversación con Elena, gratuita</p>
+            <p className="ef-res__paso-d">Para entender tu momento y decidir si tiene sentido seguir, y si ella es la persona adecuada.</p>
+            <button type="button" className="ef-btn ef-btn--full ef-btn--xl" onClick={() => { tocado.current = true; setEnAgenda(true) }}>
+              Reservar mi conversación <IcoFlecha />
+            </button>
+            <p className="ef-cta__bajo">{CALENDLY_MINUTOS} minutos · Gratuita · Eliges día y hora aquí mismo</p>
+          </div>
+        ) : paso === 'comunidad' ? (
+          <div className="ef-res__paso">
+            <p className="ef-res__paso-t">Entra en la comunidad de Elena, gratis</p>
+            <p className="ef-res__paso-d">Dos clases gratuitas y los cuadernos de trabajo del Método CENTRO, para empezar por tu punto de partida.</p>
+            <a className="ef-btn ef-btn--full ef-btn--xl" href={SKOOL} target="_blank" rel="noopener noreferrer">
+              Entrar en la comunidad <IcoFlecha />
+            </a>
+            <p className="ef-cta__bajo">Gratis · Se abre en Skool</p>
+          </div>
+        ) : null}
       </div>
     )
   }
@@ -333,7 +366,7 @@ export default function Autodiagnostico({ onSalir, destino, origen: origenLandin
             <h3 className="ef-wiz__q" ref={titulo} tabIndex={-1}>
               {destino ? '¿Dónde te enviamos el siguiente paso?' : rama === 'empresa' ? 'Vuestra orientación está lista.' : 'Tu lectura está lista.'}
             </h3>
-            <p className="ef-wiz__sub">{destino ? 'Al enviarlo entrarás en la formación gratuita, en la comunidad de Elena.' : 'Déjanos tus datos y la verás al momento, con el siguiente paso.'}</p>
+            <p className="ef-wiz__sub">{destino ? 'Al enviarlo entrarás en la formación gratuita, en la comunidad de Elena.' : 'Déjanos tus datos y la verás al momento.'}</p>
             <div className="ef-datos">
               <div className="ef-field">
                 <label htmlFor="ef-nombre">Nombre</label>
