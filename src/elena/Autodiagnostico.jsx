@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { API_FORMULARIOS, CALENDLY, WHATSAPP, REDES, PRIVACIDAD, SKOOL } from './contenido.js'
+import { API_FORMULARIOS, CALENDLY, CALENDLY_MINUTOS, PRIVACIDAD, SKOOL, SIGUIENTE_PASO } from './contenido.js'
 import {
   PUERTA, RAMAS, ramaDe, preguntasVisibles, totalEstimado, texto, valorDe, diagnosticoPersona, diagnosticoEmpresa,
 } from './diagnostico.js'
@@ -12,8 +12,9 @@ import { dos, utmDeLaUrl, IcoCheck, IcoFlecha, IcoAtras } from './comun.jsx'
 // definido en diagnostico.js). Las de una opción avanzan solas al elegir; las
 // de varias y el texto libre, con «Continuar». El último paso pide el
 // contacto. Al enviar se calcula el perfil (avatar) para el CRM y se enseña
-// una lectura personalizada con el siguiente paso: su Calendly, con nombre y
-// correo ya rellenos.
+// una lectura personalizada con UN único siguiente paso (SIGUIENTE_PASO en
+// contenido.js): reservar la conversación en su Calendly, que se abre dentro
+// de la página con nombre y correo ya rellenos, o entrar en su comunidad.
 
 const TEXTO_CONSENT = 'Acepto que Elena Fontecha trate mis datos para ponerse en contacto conmigo sobre este autodiagnóstico, conforme a su política de privacidad.'
 const CONTACTO = { key: '__contacto', tipo: 'contacto' }
@@ -21,10 +22,67 @@ const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const vacio = (v) => v == null || v === '' || (Array.isArray(v) && v.length === 0)
 
-// Props opcionales (las usa la landing de la formación gratis):
-// - destino: al enviar, en vez de la lectura, se lleva a la persona ahí.
+// La agenda (su Calendly) dentro de la página, para no sacar a la persona del
+// embudo, y la confirmación cuando Calendly avisa de que la reserva está hecha.
+function Agenda({ url, primerNombre, onVolver }) {
+  const [reservada, setReservada] = useState(false)
+  const [alto, setAlto] = useState(null)
+  const titulo = useRef(null)
+
+  useEffect(() => {
+    titulo.current?.focus({ preventScroll: true })
+    const alMensaje = (e) => {
+      if (e.origin !== 'https://calendly.com') return
+      if (e.data?.event === 'calendly.event_scheduled') setReservada(true)
+      // Calendly dice lo que mide: así el calendario no lleva scroll propio.
+      // Con un mínimo, porque mientras carga dice casi cero.
+      const h = parseInt(e.data?.payload?.height, 10)
+      if (e.data?.event === 'calendly.page_height' && h > 0) setAlto(Math.max(h, 460))
+    }
+    window.addEventListener('message', alMensaje)
+    return () => window.removeEventListener('message', alMensaje)
+  }, [])
+
+  // Sin la ficha del evento de Calendly (ya lo dice el titular): así los días
+  // quedan a la vista sin bajar.
+  const src = `${url}&embed_domain=${encodeURIComponent(window.location.hostname)}&embed_type=Inline&hide_event_type_details=1&primary_color=4f1828`
+  return (
+    <>
+      {reservada ? (
+        <>
+          <span className="ef-res__marca"><IcoCheck /></span>
+          <h3 className="ef-h3" ref={titulo} tabIndex={-1}>Conversación reservada{primerNombre ? `, ${primerNombre}` : ''}</h3>
+          <p className="ef-p">Te llega la confirmación por correo. Elena leerá tus respuestas antes de hablar contigo.</p>
+        </>
+      ) : (
+        <>
+          <p className="ef-eyebrow ef-res__hola">El siguiente paso</p>
+          <h3 className="ef-h3" ref={titulo} tabIndex={-1}>Elige día y hora para hablar con Elena</h3>
+          <p className="ef-p">Una primera conversación de {CALENDLY_MINUTOS} minutos, gratuita, para entender tu momento y decidir si tiene sentido seguir.</p>
+        </>
+      )}
+      <iframe
+        className="ef-agenda"
+        src={src}
+        title="Calendario de Elena Fontecha"
+        style={alto ? { height: `${alto}px` } : undefined}
+      />
+      {reservada ? null : (
+        <div className="ef-agenda__pie">
+          <button type="button" className="ef-wiz__atras" onClick={onVolver}><IcoAtras /> Volver a mi lectura</button>
+          <a href={url} target="_blank" rel="noopener noreferrer">¿No ves el calendario? Ábrelo aquí</a>
+        </div>
+      )}
+    </>
+  )
+}
+
+// Props opcionales:
+// - onSalir: «Atrás» en la primera pregunta (la landing lo usa para volver al vídeo).
+// - destino: al enviar, en vez de la lectura, se lleva a la persona ahí
+//   (landing de la formación gratis).
 // - origen: etiqueta de origen del lead en el CRM.
-export default function Autodiagnostico({ onEstado, destino, origen: origenLanding }) {
+export default function Autodiagnostico({ onSalir, destino, origen: origenLanding }) {
   const [r, setR] = useState({})
   const [i, setI] = useState(0)
   const [nombre, setNombre] = useState('')
@@ -36,6 +94,7 @@ export default function Autodiagnostico({ onEstado, destino, origen: origenLandi
   const [estado, setEstado] = useState('form') // form | enviando | ok | error
   const [error, setError] = useState('')
   const [resultado, setResultado] = useState(null)
+  const [enAgenda, setEnAgenda] = useState(false)
   const tarjeta = useRef(null)
   const titulo = useRef(null)
   const tocado = useRef(false)
@@ -58,7 +117,7 @@ export default function Autodiagnostico({ onEstado, destino, origen: origenLandi
     titulo.current?.focus({ preventScroll: true })
     const top = tarjeta.current?.getBoundingClientRect().top ?? 0
     if (top < 60) tarjeta.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }, [i, estado])
+  }, [i, estado, enAgenda])
 
   const siguiente = () => { tocado.current = true; setI((x) => x + 1) }
   const atras = () => { tocado.current = true; setI((x) => Math.max(0, x - 1)) }
@@ -149,7 +208,6 @@ export default function Autodiagnostico({ onEstado, destino, origen: origenLandi
       tocado.current = true
       setResultado({ rama, ...diag })
       setEstado('ok')
-      onEstado?.('ok')
       if (destino) setTimeout(() => { window.location.href = destino }, 1400)
     } catch {
       setEstado('error')
@@ -173,12 +231,22 @@ export default function Autodiagnostico({ onEstado, destino, origen: origenLandi
     )
   }
 
-  // ── Resultado ──────────────────────────────────────────────────────────────
+  // ── Resultado: la lectura y un único siguiente paso ────────────────────────
   if (estado === 'ok' && resultado) {
+    const conversacion = SIGUIENTE_PASO[resultado.rama] === 'conversacion'
+
+    if (enAgenda) {
+      return (
+        <div className="ef-card ef-res" ref={tarjeta}>
+          <Agenda url={calendlyUrl} primerNombre={primerNombre} onVolver={() => { tocado.current = true; setEnAgenda(false) }} />
+        </div>
+      )
+    }
+
     return (
       <div className="ef-card ef-res" ref={tarjeta}>
         <span className="ef-res__marca"><IcoCheck /></span>
-        <p className="ef-eyebrow ef-res__hola">Gracias{primerNombre ? `, ${primerNombre}` : ''}</p>
+        <p className="ef-eyebrow ef-res__hola">Gracias{primerNombre ? `, ${primerNombre}` : ''} · Tu lectura</p>
 
         {resultado.rama === 'persona' ? (
           <>
@@ -217,25 +285,29 @@ export default function Autodiagnostico({ onEstado, destino, origen: origenLandi
           </>
         )}
 
-        {resultado.rama === 'empresa' ? (
-          <a className="ef-btn ef-btn--full ef-res__cta" href={calendlyUrl} target="_blank" rel="noopener noreferrer">
-            Reservar una conversación con Elena <IcoFlecha />
-          </a>
-        ) : (
-          <>
-            <a className="ef-btn ef-btn--full ef-res__cta" href={SKOOL} target="_blank" rel="noopener noreferrer">
-              Unirse a la comunidad <IcoFlecha />
-            </a>
-            <a className="ef-btn ef-btn--full ef-btn--ghost" href={calendlyUrl} target="_blank" rel="noopener noreferrer" style={{ marginTop: '10px' }}>
-              O reservar mi conversación gratuita
-            </a>
-          </>
-        )}
-        <p className="ef-res__alt">
-          ¿Prefieres escribirle? <a href={WHATSAPP} target="_blank" rel="noopener noreferrer">WhatsApp</a>
-          {' · '}
-          <a href={REDES[0].url} target="_blank" rel="noopener noreferrer">Instagram</a>
-        </p>
+        {/* El siguiente paso: uno solo. */}
+        <div className="ef-res__paso">
+          <p className="ef-mini">El siguiente paso</p>
+          {conversacion ? (
+            <>
+              <p className="ef-res__paso-t">Una primera conversación con Elena, gratuita</p>
+              <p className="ef-res__paso-d">Para entender tu momento y decidir si tiene sentido seguir, y si ella es la persona adecuada.</p>
+              <button type="button" className="ef-btn ef-btn--full ef-btn--xl" onClick={() => { tocado.current = true; setEnAgenda(true) }}>
+                Reservar mi conversación <IcoFlecha />
+              </button>
+              <p className="ef-cta__bajo">{CALENDLY_MINUTOS} minutos · Gratuita · Eliges día y hora aquí mismo</p>
+            </>
+          ) : (
+            <>
+              <p className="ef-res__paso-t">Entra en la comunidad de Elena, gratis</p>
+              <p className="ef-res__paso-d">Dos clases gratuitas y los cuadernos de trabajo del Método CENTRO, para empezar por tu punto de partida.</p>
+              <a className="ef-btn ef-btn--full ef-btn--xl" href={SKOOL} target="_blank" rel="noopener noreferrer">
+                Entrar en la comunidad <IcoFlecha />
+              </a>
+              <p className="ef-cta__bajo">Gratis · Se abre en Skool</p>
+            </>
+          )}
+        </div>
       </div>
     )
   }
@@ -259,9 +331,9 @@ export default function Autodiagnostico({ onEstado, destino, origen: origenLandi
         {actual.tipo === 'contacto' ? (
           <form onSubmit={enviar} noValidate>
             <h3 className="ef-wiz__q" ref={titulo} tabIndex={-1}>
-              {rama === 'empresa' ? '¿A quién enviamos la orientación?' : '¿Dónde te enviamos el siguiente paso?'}
+              {destino ? '¿Dónde te enviamos el siguiente paso?' : rama === 'empresa' ? 'Vuestra orientación está lista.' : 'Tu lectura está lista.'}
             </h3>
-            <p className="ef-wiz__sub">{destino ? 'Al enviarlo entrarás en la formación gratuita, en la comunidad de Elena.' : 'Al enviarlo verás tu lectura y podrás reservar la conversación.'}</p>
+            <p className="ef-wiz__sub">{destino ? 'Al enviarlo entrarás en la formación gratuita, en la comunidad de Elena.' : 'Déjanos tus datos y la verás al momento, con el siguiente paso.'}</p>
             <div className="ef-datos">
               <div className="ef-field">
                 <label htmlFor="ef-nombre">Nombre</label>
@@ -352,8 +424,8 @@ export default function Autodiagnostico({ onEstado, destino, origen: origenLandi
             )}
 
             <div className="ef-wiz__nav">
-              {i > 0 ? (
-                <button type="button" className="ef-wiz__atras" onClick={atras}><IcoAtras /> Atrás</button>
+              {i > 0 || onSalir ? (
+                <button type="button" className="ef-wiz__atras" onClick={i > 0 ? atras : onSalir}><IcoAtras /> Atrás</button>
               ) : <span />}
               {actual.tipo === 'varios' ? (
                 <button type="button" className="ef-btn" onClick={siguiente} disabled={vacio(r[actual.key])}>

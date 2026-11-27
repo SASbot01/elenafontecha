@@ -1,9 +1,19 @@
 # Elena Fontecha · web con VSL y autodiagnóstico
 
-Landing de **Elena Fontecha** (desarrollo personal y liderazgo, integrados).
+Embudo de **Elena Fontecha** (desarrollo personal y liderazgo, integrados). Un solo camino:
 
-- Arriba, su pregunta central y el vídeo (VSL).
-- Debajo, un **autodiagnóstico ramificado** que capta el lead, le da una lectura personalizada y le lleva a reservar la **primera conversación gratuita** en su Calendly.
+1. **Landing:** titular, el vídeo (una única VSL) y **un botón**, «Hacer el autodiagnóstico», repetido debajo de cada bloque.
+2. **Autodiagnóstico:** a pantalla completa, una pregunta por pantalla (dirección propia: `/#autodiagnostico`). Capta el lead.
+3. **La lectura:** su resultado y **un único siguiente paso**. Para una persona, entrar en la comunidad gratuita (Skool); para un equipo o una empresa, reservar la primera conversación, con su Calendly dentro de la página.
+
+### Reglas del embudo
+
+No romperlas al añadir cosas:
+
+- **Lo primero que se ve tiene que bastar para convertir.** Titular, vídeo y botón caben sin hacer scroll, en móvil y en escritorio. Lo de debajo solo resuelve dudas.
+- **Un único botón.** Nada de «ver vídeo» + «hacer el autodiagnóstico»: el vídeo ya está delante. Tras la lectura, también un solo paso.
+- **Sin menú en la cabecera y sin enlaces en el pie.** Nada que saque a la persona del camino: ni redes, ni web, ni secciones. La política de privacidad se enlaza donde la ley la pide, en la casilla de consentimiento del formulario.
+- **Un solo vídeo.** El embudo no lleva más VSL en los pasos siguientes.
 
 Agencia Silvestre AI · CRM en HELM.
 
@@ -21,19 +31,35 @@ Es una web estática (Vite + React): se despliega tal cual en Vercel, sin variab
 
 | Quiero cambiar… | Archivo |
 |---|---|
-| Textos de la página, enlaces, Calendly, WhatsApp, **el vídeo** (`VIDEO_EMBED`) | `src/elena/contenido.js` |
+| Textos de la página, el botón (`CTA`), Calendly, Skool, **el vídeo** (`VIDEO_SRC`) | `src/elena/contenido.js` |
+| El siguiente paso tras la lectura, por rama (`SIGUIENTE_PASO`) | `src/elena/contenido.js` |
 | Preguntas, ramas y clasificación del autodiagnóstico | `src/elena/diagnostico.js` |
 | Estructura de la página | `src/ElenaValor.jsx` |
-| El Método CENTRO (letras, textos) y su rueda | `src/elena/contenido.js` (`CENTRO`) y `src/elena/Rueda.jsx` |
+| El Método CENTRO (letras, textos) y su rueda (hoy solo en la formación gratis) | `src/elena/contenido.js` (`CENTRO`) y `src/elena/Rueda.jsx` |
 | Landing de la formación gratis (`/formacion-gratis/`, lleva a Skool al enviar) | `src/FormacionGratis.jsx` y `formacion-gratis/index.html` |
-| El asistente y las lecturas finales | `src/elena/Autodiagnostico.jsx` |
+| El asistente, la lectura y la agenda | `src/elena/Autodiagnostico.jsx` (textos de las lecturas en `diagnostico.js`) |
 | Estilos (burdeos `#4F1828`, Montserrat) | `src/elena/elena.css` |
 | Fotos | `public/elena/` |
+| El vídeo y su póster | `public/video/` |
 | Imagen al compartir y dominio | `public/og.jpg` y `VITE_SITE_URL` en `.env` |
 
 **Marca de Elena:** burdeos `#4F1828`, Montserrat, fondo blanco y tono editorial anti-autoayuda.
 
 **Palabras prohibidas**, que no deben aparecer nunca: transformación, empoderamiento, potencial, reinvención, mejor versión, despertar, difuso, «por inercia», «ha dejado de elegir» y «herramientas» como etiqueta. Tampoco se usan testimonios hasta tener su permiso.
+
+## El vídeo
+
+Va alojado en la propia web: `public/video/vsl-elena.mp4` (720p, unos 46 MB) con su póster `vsl-elena-poster.jpg`. Se reproduce con los controles del navegador, sin enlaces de salida ni vídeos recomendados.
+
+Para cambiarlo, comprime el nuevo y sustituye los dos archivos (GitHub no admite archivos de más de 100 MB y avisa a partir de 50):
+
+```bash
+ffmpeg -i original.mp4 -vf scale=1280:720 -c:v libx264 -preset slow -crf 26 -g 60 -pix_fmt yuv420p \
+  -c:a aac -b:a 96k -movflags +faststart public/video/vsl-elena.mp4
+ffmpeg -ss 2 -i original.mp4 -frames:v 1 -vf scale=1280:720 -q:v 7 public/video/vsl-elena-poster.jpg
+```
+
+Si el tráfico crece, conviene pasarlo a un alojamiento de vídeo (Wistia, donde ya están las clases gratuitas): se deja `VIDEO_SRC` vacío y se pega su dirección `/embed/…` en `VIDEO_EMBED`.
 
 ## Cómo llega el lead al CRM
 
@@ -66,5 +92,5 @@ Los dos formularios **ya están creados en producción** con las preguntas actua
 
 ## Pendiente
 
-- Pegar el vídeo en `VIDEO_EMBED`. Mientras esté vacío, sale su foto con «El vídeo, muy pronto».
 - Ajustar `VITE_SITE_URL` al dominio definitivo.
+- Medición: no hay píxel. Al ponerlo, los eventos van en la carga (vista), el envío del autodiagnóstico (lead) y la reserva en Calendly (`calendly.event_scheduled`, que ya se escucha en `Autodiagnostico.jsx`).

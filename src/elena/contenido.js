@@ -11,16 +11,32 @@
 // «por inercia», «ha dejado de elegir», «herramientas» como etiqueta.
 
 // ── Para rellenar ────────────────────────────────────────────────────────
-// Embed del vídeo (YouTube/Vimeo con /embed/…). Vacío = póster con «Muy pronto».
+// El vídeo (VSL): el embudo lleva UNO solo, arriba del todo.
+// · VIDEO_SRC: archivo propio en public/video/ (sin enlaces de salida ni
+//   vídeos recomendados: no dispersa el tráfico). Es el que se usa.
+// · VIDEO_EMBED: alternativa, un reproductor externo con /embed/… (Wistia,
+//   Vimeo). Solo se usa si VIDEO_SRC está vacío.
+// Los dos vacíos = póster con «El vídeo, muy pronto».
+export const VIDEO_SRC = '/video/vsl-elena.mp4'
+export const VIDEO_POSTER = '/video/vsl-elena-poster.jpg'
+export const VIDEO_MINUTOS = 9
 export const VIDEO_EMBED = ''
 // Su Calendly de primera conversación (el de su web). Se abre con nombre y
 // correo ya rellenos.
 export const CALENDLY = 'https://calendly.com/elena-fontecha/quieres-informacion'
-export const WHATSAPP = 'https://wa.me/34608665343'
+// Lo que dura esa conversación en su Calendly (se dice junto al botón).
+export const CALENDLY_MINUTOS = 30
 // Comunidad de Elena en Skool: «Las Seis Estaciones».
 export const SKOOL = 'https://www.skool.com/las-seis-estaciones-9783'
 // Adonde lleva la landing de la formación gratis al enviar el formulario.
 export const SKOOL_ABOUT = 'https://www.skool.com/las-seis-estaciones-9783/about'
+// El ÚNICO siguiente paso que se ofrece tras la lectura, por rama. Uno solo:
+// si hay dos botones, no se pulsa ninguno.
+//   'conversacion' → reservar en su Calendly (se abre dentro de la página)
+//   'comunidad'    → entrar en Skool
+// Es lo que Elena dice en el vídeo: para ti, la puerta de entrada es la
+// comunidad gratuita; para tu equipo o tu empresa, cuestionario y conversación.
+export const SIGUIENTE_PASO = { persona: 'comunidad', empresa: 'conversacion' }
 // Endpoint de formularios de HELM: guarda el lead en el CRM de Elena.
 export const API_FORMULARIOS = 'https://helm.s4sf.net/api/formularios'
 // ───────────────────────────────────────────────────────────────────────────
@@ -34,6 +50,17 @@ export const REDES = [
 export const PRIVACIDAD = 'https://elenafontecha.com/legales/politica-privacidad'
 
 export const PREGUNTA_GANCHO = '¿Sigo queriendo la vida que estoy construyendo con mi manera de vivir y de actuar?'
+
+// El único botón de la landing, repetido debajo de cada bloque.
+export const CTA = 'Hacer el autodiagnóstico'
+export const CTA_BAJO = 'Para ti o para tu equipo · Unos cinco minutos'
+
+// Qué se lleva quien responde el autodiagnóstico (bloque 1 de la landing).
+export const TE_LLEVAS = [
+  ['Una lectura de tu momento', 'Según lo que respondas, para ti o para tu equipo o tu empresa. Es una foto, no una sentencia.'],
+  ['Por dónde empezar', 'Tu punto de partida en el Método CENTRO: cuál de sus seis pasos te pide más atención ahora.'],
+  ['Elena lo lee personalmente', 'No es un algoritmo ni un equipo: lo lee ella. Y tú sales con un único siguiente paso.'],
+]
 
 // Las preguntas del autodiagnóstico (con sus ramas) viven en ./diagnostico.js.
 
@@ -105,34 +132,10 @@ export const CENTRO = [
   },
 ]
 
-export const DIMENSIONES = ['Física', 'Mental', 'Emocional', 'Espiritual']
-
 export const CIFRAS = [
   { n: '+25', t: 'años de trayectoria directiva y en consejos' },
   { n: '60', t: 'personas en los equipos que formó y dirigió' },
   { n: '3', t: 'grandes compañías: PortAventura, Servihabitat y Haya Real Estate' },
 ]
 
-export const CREDENCIALES = [
-  ['IESE', 'Programa de Dirección General (PDG) · Trained Mentor'],
-  ['IESE · Spencer Stuart', 'Mujeres en Consejos · Programa de consejeros'],
-  ['Leadership Circle Profile®', 'Practitioner certificada'],
-  ['Universidad Francisco de Vitoria', 'Coach dialógico'],
-  ['CEU San Pablo', 'Licenciada en Derecho'],
-]
-
 export const TRAYECTORIA = ['PortAventura', 'Servihabitat', 'Haya Real Estate', 'Elara Asociados', 'Fundación Mare Terra']
-
-export const PASOS = [
-  ['Respondes el autodiagnóstico', 'Unas preguntas que se adaptan a ti o a tu empresa. Unos cinco minutos.'],
-  ['Elena lo lee personalmente', 'No es un algoritmo ni un equipo: lo lee ella, antes de hablar contigo.'],
-  ['Una primera conversación, gratuita', 'Para entender tu momento y decidir si tiene sentido seguir, y si ella es la persona adecuada.'],
-]
-
-export const FAQ = [
-  ['¿Tengo que estar en crisis para hacerlo?', 'No. El Método CENTRO no presupone insatisfacción ni crisis. Sirve tanto para confirmar lo que quieres conservar como para abrir cambios pequeños o profundos.'],
-  ['¿Es terapia?', 'No. Es un acompañamiento de desarrollo personal y liderazgo, orientado a decisiones, conversaciones y acciones concretas en tu vida y en tu trabajo.'],
-  ['¿Qué pasa con mis respuestas?', 'Las lee Elena personalmente para preparar la conversación contigo. No se comparten con terceros.'],
-  ['¿Cuánto cuesta la primera conversación?', 'Nada. Es gratuita y sin compromiso: sirve para entender tu momento y ver si tiene sentido trabajar juntas o juntos.'],
-  ['¿Trabajas también con equipos y empresas?', 'Sí: con equipos de dirección y con empresas que quieren desarrollar su talento directivo, incluida la evaluación de liderazgo con el Leadership Circle Profile®.'],
-]

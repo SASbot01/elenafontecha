@@ -80,7 +80,7 @@
   font-weight:300; font-size:clamp(23px,2.4vw,30px); line-height:1.22;
   letter-spacing:-0.015em; color:var(--tinta); margin:0;
 }
-.ef-h1 em, .ef-h2 em, .ef-h3 em, .ef-camino__q em{ font-style:normal; font-weight:600; color:var(--burdeos); }
+.ef-h1 em, .ef-h2 em, .ef-h3 em, .ef-vsl__h1 em{ font-style:normal; font-weight:600; color:var(--burdeos); }
 .ef-h2--claro{ color:#fff; }
 .ef-h2--claro em{ color:var(--rosa-claro); }
 
@@ -115,6 +115,7 @@
 .ef-btn--claro{ background:#fff; color:var(--burdeos); border-color:#fff; }
 .ef-btn--claro:hover{ background:var(--rosa); color:var(--burdeos); border-color:var(--rosa); }
 .ef-btn--full{ width:100%; }
+.ef-btn--xl{ padding:18px 34px; font-size:16.5px; }
 
 /* ── Cabecera ────────────────────────────────────────────────────────────── */
 .ef-header{
@@ -128,9 +129,6 @@
   background:none; border:0; padding:0; cursor:pointer;
   font-weight:600; letter-spacing:.22em; text-transform:uppercase; font-size:14px; color:var(--burdeos);
 }
-.ef-nav{ display:flex; gap:28px; margin-left:auto; }
-.ef-nav button{ background:none; border:0; padding:6px 0; cursor:pointer; font-size:13.5px; color:var(--tinta-2); transition:color .15s; }
-.ef-nav button:hover{ color:var(--burdeos); }
 
 /* ── Hero ────────────────────────────────────────────────────────────────── */
 .ef-hero{ padding:64px 0 96px; }
@@ -153,37 +151,56 @@
 .ef-franja__k{ font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--burdeos); }
 .ef-franja__v{ font-size:12.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--tinta-2); }
 
-/* ── Bloque oscuro del vídeo ─────────────────────────────────────────────── */
-.ef-oscuro{
-  padding:104px 0;
-  background:
-    radial-gradient(80% 60% at 50% 0%, rgba(102,34,58,.85), transparent 70%),
-    var(--burdeos-osc);
-  color:#fff;
+/* ── Landing: cabecera sin menú y hero con la VSL ────────────────────────────
+ * Titular, vídeo y botón tienen que caber sin hacer scroll: el vídeo se
+ * encoge con la altura de la pantalla (100svh) antes que empujar el botón
+ * fuera. */
+.ef-top{ padding:18px 0 0; text-align:center; }
+.ef-top .ef-wordmark{ cursor:default; font-size:12.5px; }
+.ef-vsl{ padding:16px 0 52px; }
+.ef-vsl__in{ display:flex; flex-direction:column; align-items:center; text-align:center; }
+.ef-vsl__pre{ margin:0 0 12px; font-size:11.5px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--burdeos); }
+.ef-vsl__h1{
+  margin:0; max-width:1060px; font-weight:300; font-size:clamp(24px,2.6vw,36px); line-height:1.16;
+  letter-spacing:-0.025em; color:var(--tinta); text-wrap:balance;
 }
-.ef-oscuro__head{ max-width:680px; margin:0 auto 48px; }
-.ef-oscuro__video{ max-width:960px; margin:0 auto 44px; }
+.ef-vsl__sub{ margin:12px 0 0; max-width:74ch; font-size:15.5px; line-height:1.55; color:var(--tinta-2); text-wrap:balance; }
+.ef-vsl__video{ width:min(100%, 820px, max(300px, calc((100svh - 384px) * 16 / 9))); margin-top:20px; }
+.ef-vsl__cred{ margin:22px 0 0; max-width:66ch; font-size:13px; line-height:1.6; color:var(--apagado); }
+.ef-vsl__cred strong{ color:var(--tinta); font-weight:600; }
+
+/* El único botón de la landing, con su línea de debajo */
+.ef-cta{ display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:20px; }
+.ef-cta__bajo{ margin:0; font-size:12.5px; line-height:1.5; color:var(--apagado); text-align:center; }
+.ef-section .ef-cta{ margin-top:44px; }
+.ef-autor__txt .ef-cta{ align-items:flex-start; margin-top:36px; }
+.ef-final .ef-cta{ margin-top:36px; }
+.ef-final .ef-cta__bajo{ color:rgba(255,255,255,.7); }
 
 .ef-video{
   position:relative; aspect-ratio:16/9; width:100%; border-radius:3px; overflow:hidden;
-  background:#1a070d; box-shadow:0 50px 90px -40px rgba(0,0,0,.75);
+  background:#1a070d; box-shadow:0 30px 60px -34px rgba(79,24,40,.6);
 }
-.ef-video iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+.ef-video iframe, .ef-video video{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+.ef-video video{ object-fit:contain; background:#1a070d; }
 .ef-video__poster{ position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:none; cursor:pointer; }
-.ef-video__poster img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform 1.2s cubic-bezier(.2,.7,.2,1); }
-.ef-video__poster:hover img{ transform:scale(1.025); }
+.ef-video__poster img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
 .ef-video__velo{ position:absolute; inset:0; background:linear-gradient(90deg, rgba(42,11,20,.62) 0%, rgba(42,11,20,.18) 55%, rgba(42,11,20,0) 100%); }
 .ef-video__play{
-  position:absolute; left:50%; top:50%; width:88px; height:88px; margin:-44px 0 0 -44px; border-radius:50%;
+  position:absolute; left:50%; top:64%; width:84px; height:84px; margin:-42px 0 0 -42px; border-radius:50%;
   display:flex; align-items:center; justify-content:center; background:#fff; color:var(--burdeos);
-  box-shadow:0 0 0 12px rgba(255,255,255,.18); transition:transform .25s, box-shadow .25s;
+  box-shadow:0 0 0 12px rgba(255,255,255,.22); transition:transform .25s, box-shadow .25s;
 }
-.ef-video__play svg{ width:32px; height:32px; margin-left:5px; }
-.ef-video__poster:hover .ef-video__play{ transform:scale(1.06); box-shadow:0 0 0 18px rgba(255,255,255,.14); }
+.ef-video__play svg{ width:30px; height:30px; margin-left:5px; }
+.ef-video__poster:hover .ef-video__play{ transform:scale(1.06); box-shadow:0 0 0 18px rgba(255,255,255,.16); }
 .ef-video__poster.is-pronto{ cursor:default; }
-.ef-video__poster.is-pronto:hover img{ transform:none; }
 .ef-video__poster.is-pronto .ef-video__play{ opacity:.92; }
+.ef-video__poster.is-pronto:hover .ef-video__play{ transform:none; }
 .ef-video__rotulo{ position:absolute; left:26px; bottom:26px; text-align:left; }
+.ef-video__dur{
+  position:absolute; right:14px; top:14px; padding:5px 10px; border-radius:2px;
+  background:rgba(42,11,20,.8); color:#fff; font-size:12px; font-weight:600; letter-spacing:.04em;
+}
 
 /* ── Para quién ──────────────────────────────────────────────────────────── */
 .ef-split{ display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
@@ -200,31 +217,6 @@
 .ef-nop ul{ list-style:none; margin:0; padding:0; }
 .ef-nop li{ position:relative; padding:5px 0 5px 24px; font-size:15px; color:var(--tinta-2); }
 .ef-nop li::before{ content:'—'; position:absolute; left:0; color:var(--apagado); }
-
-/* ── La idea: el caso ────────────────────────────────────────────────────── */
-.ef-caso{
-  max-width:1000px; margin:60px auto 0; background:var(--papel); border:1px solid var(--linea);
-  padding:48px; box-shadow:0 40px 70px -50px rgba(79,24,40,.35);
-}
-.ef-caso__sit{ border-left:3px solid var(--burdeos); padding-left:26px; }
-.ef-caso__txt{ font-size:clamp(19px,2vw,24px); font-weight:300; line-height:1.48; color:var(--tinta); margin:0; }
-.ef-caso__planos{ display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-top:34px; }
-.ef-caso__plano{ background:var(--crema); border-top:2px solid var(--burdeos); padding:24px 26px; }
-.ef-caso__plano p{ margin:0; font-size:15.5px; line-height:1.68; color:var(--tinta-2); }
-.ef-caso__plano .ef-caso__k{ font-size:15px; font-weight:600; color:var(--tinta); margin-bottom:8px; }
-.ef-caso__k span{ color:var(--burdeos); font-weight:700; margin-right:10px; font-size:13px; letter-spacing:.06em; }
-.ef-caso__fin{ margin:30px 0 0; text-align:center; }
-
-/* ── Banda del camino ────────────────────────────────────────────────────── */
-.ef-camino{ position:relative; display:flex; align-items:center; min-height:clamp(380px,48vw,580px); overflow:hidden; }
-.ef-camino img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-.ef-camino__velo{ position:absolute; inset:0; background:linear-gradient(90deg, rgba(42,11,20,.88) 0%, rgba(42,11,20,.55) 45%, rgba(42,11,20,.12) 100%); }
-.ef-camino__q{
-  position:relative; z-index:2; margin:0; padding:0 28px;
-  margin-left:max(0px, calc((100% - var(--ancho)) / 2)); max-width:640px;
-}
-.ef-camino__q p{ margin:0; color:#fff; font-size:clamp(25px,3.1vw,40px); font-weight:300; line-height:1.28; letter-spacing:-0.015em; }
-.ef-camino__q em{ color:var(--rosa-claro); }
 
 /* ── El Método CENTRO ──────────────────────────────────────────────────────── */
 .ef-metodo__head{ max-width:760px; }
@@ -249,7 +241,6 @@
 .ef-rueda__nodo.is-on text{ fill:#fff; }
 .ef-metodo__hint{ text-align:center; margin:18px 0 0; font-size:11px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--apagado); }
 
-.ef-est{ list-style:none; margin:0; padding:0; }
 .ef-est__item{ border-top:1px solid var(--linea); }
 .ef-est__item:last-child{ border-bottom:1px solid var(--linea); }
 .ef-est__btn{
@@ -258,17 +249,9 @@
 }
 .ef-est__n{ flex:none; min-width:28px; font-size:18px; font-weight:700; letter-spacing:.08em; color:var(--burdeos); }
 .ef-est__t{ flex:1; font-size:18px; font-weight:500; color:var(--tinta); transition:color .15s; }
-.ef-est__btn:hover .ef-est__t{ color:var(--burdeos); }
-.ef-est__mas{ position:relative; flex:none; width:14px; height:14px; }
-.ef-est__mas::before, .ef-est__mas::after{ content:''; position:absolute; left:0; top:6.5px; width:14px; height:1.5px; background:var(--burdeos); transition:transform .25s; }
-.ef-est__mas::after{ transform:rotate(90deg); }
 .ef-est__item.is-on .ef-est__t{ color:var(--burdeos); font-weight:600; }
-.ef-est__item.is-on .ef-est__mas::after{ transform:rotate(0); }
 .ef-est__body{ padding:0 4px 28px 50px; animation:ef-entra .35s ease both; }
 .ef-est__q{ margin:0 0 20px; font-size:17.5px; line-height:1.5; color:var(--burdeos); font-weight:500; }
-.ef-est__planos{ display:grid; grid-template-columns:1fr 1fr; gap:22px; }
-.ef-est__planos p{ margin:0; font-size:14.5px; line-height:1.66; color:var(--tinta-2); }
-.ef-est__planos .ef-mini{ margin-bottom:8px; line-height:1.5; }
 @keyframes ef-entra{ from{ opacity:0; transform:translateY(-4px); } to{ opacity:1; transform:none; } }
 
 /* ── Quién es Elena ──────────────────────────────────────────────────────── */
@@ -284,17 +267,9 @@
 .ef-cifra{ padding:24px 22px 0 0; }
 .ef-cifra__n{ display:block; font-size:44px; font-weight:300; line-height:1; letter-spacing:-0.03em; color:var(--burdeos); }
 .ef-cifra__t{ display:block; margin-top:10px; font-size:13px; line-height:1.5; color:var(--tinta-2); }
-.ef-creds{
-  display:grid; grid-template-columns:1.4fr 1fr; gap:64px;
-  margin-top:72px; padding-top:44px; border-top:1px solid var(--linea-2);
-}
-.ef-creds__list{ display:grid; grid-template-columns:1fr 1fr; gap:20px 32px; margin:6px 0 0; }
-.ef-creds__list dt{ font-size:13.5px; font-weight:700; color:var(--tinta); }
-.ef-creds__list dd{ margin:3px 0 0; font-size:13.5px; line-height:1.55; color:var(--tinta-2); }
-.ef-creds__hoy{ margin:6px 0 0; font-size:15px; line-height:1.72; color:var(--tinta-2); }
 
-/* ── Cómo empieza ────────────────────────────────────────────────────────── */
-.ef-pasos{ list-style:none; padding:0; margin:52px 0 72px; display:grid; grid-template-columns:repeat(3,1fr); gap:28px; }
+/* ── Pasos numerados (qué te llevas, qué incluye) ────────────────────────── */
+.ef-pasos{ list-style:none; padding:0; margin:52px 0 0; display:grid; grid-template-columns:repeat(3,1fr); gap:28px; }
 .ef-pasos li{ border-top:2px solid var(--linea-2); padding-top:24px; }
 .ef-pasos li:first-child{ border-top-color:var(--burdeos); }
 .ef-pasos__n{ font-size:13px; font-weight:700; letter-spacing:.08em; color:var(--burdeos); }
@@ -412,35 +387,30 @@
 .ef-res__rt{ margin:0; font-size:16.5px; font-weight:600; color:var(--tinta); }
 .ef-res__rx{ margin:6px 0 0; font-size:14.5px; line-height:1.62; color:var(--tinta-2); }
 .ef-res__cta{ margin-top:28px; }
-.ef-res__alt{ margin:16px 0 0; text-align:center; font-size:14px; color:var(--tinta-2); }
-.ef-res__alt a{ color:var(--burdeos); font-weight:600; text-decoration:underline; text-underline-offset:2px; }
+/* El único siguiente paso, al final de la lectura */
+.ef-res__paso{ margin-top:32px; padding-top:28px; border-top:1px solid var(--linea); text-align:center; }
+.ef-res__paso-t{ margin:0; font-size:21px; font-weight:600; line-height:1.3; color:var(--tinta); text-wrap:balance; }
+.ef-res__paso-d{ margin:8px auto 22px; max-width:52ch; font-size:15px; line-height:1.65; color:var(--tinta-2); }
+.ef-res__paso .ef-cta__bajo{ margin-top:12px; }
+/* La agenda (Calendly) dentro de la tarjeta */
+.ef-agenda{ display:block; width:100%; height:720px; margin-top:22px; border:0; }
+.ef-agenda__pie{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin-top:12px; }
+.ef-agenda__pie a{ font-size:13px; color:var(--apagado); text-decoration:underline; text-underline-offset:2px; }
 
-/* ── Preguntas frecuentes ────────────────────────────────────────────────── */
-.ef-faq{ margin-top:48px; }
-.ef-faq details{ border-top:1px solid var(--linea-2); }
-.ef-faq details:last-child{ border-bottom:1px solid var(--linea-2); }
-.ef-faq summary{
-  position:relative; list-style:none; cursor:pointer; padding:23px 44px 23px 0;
-  font-size:17px; font-weight:500; color:var(--tinta); transition:color .15s;
-}
-.ef-faq summary::-webkit-details-marker{ display:none; }
-.ef-faq summary:hover{ color:var(--burdeos); }
-.ef-faq__i{ position:absolute; right:6px; top:50%; width:14px; height:14px; margin-top:-7px; }
-.ef-faq__i::before, .ef-faq__i::after{ content:''; position:absolute; left:0; top:6.5px; width:14px; height:1.5px; background:var(--burdeos); transition:transform .25s; }
-.ef-faq__i::after{ transform:rotate(90deg); }
-.ef-faq details[open] .ef-faq__i::after{ transform:rotate(0); }
-.ef-faq details p{ margin:0 0 24px; max-width:64ch; font-size:15.5px; line-height:1.72; color:var(--tinta-2); }
+/* ── Autodiagnóstico a pantalla completa (paso 2 del embudo) ─────────────── */
+.ef-quiz{ padding:22px 0 64px; min-height:calc(100svh - 110px); }
+.ef-quiz__in{ max-width:780px; }
+.ef-quiz .ef-wiz{ min-height:520px; }
 
 /* ── Cierre ──────────────────────────────────────────────────────────────── */
 .ef-final{
-  padding:112px 0;
+  padding:92px 0;
   background:
     radial-gradient(70% 80% at 50% 100%, rgba(102,34,58,.9), transparent 70%),
     var(--burdeos);
   color:#fff;
 }
 .ef-final__q{ margin:0 auto; max-width:24ch; font-size:clamp(27px,3.6vw,48px); font-weight:300; line-height:1.2; letter-spacing:-0.02em; color:#fff; text-wrap:balance; }
-.ef-final .ef-p{ margin:24px auto 36px; }
 
 /* ── Pie ─────────────────────────────────────────────────────────────────── */
 .ef-footer{ background:var(--burdeos-osc); color:rgba(255,255,255,.75); }
@@ -453,13 +423,13 @@
 .ef-footer__legal{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; padding-top:20px; padding-bottom:36px; border-top:1px solid rgba(255,255,255,.12); font-size:12.5px; color:rgba(255,255,255,.5); }
 .ef-footer__legal a{ font-size:12.5px; color:rgba(255,255,255,.6); }
 
+/* Pie de la landing: sin enlaces */
+.ef-pie{ padding:20px 0 24px; border-top:1px solid var(--linea); text-align:center; font-size:12px; color:var(--apagado); }
+
 /* ── Barra fija (móvil) ──────────────────────────────────────────────────── */
 .ef-fija{ display:none; }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
-@media (max-width:1040px){
-  .ef-nav{ display:none; }
-}
 @media (max-width:920px){
   .ef-section{ padding:84px 0; }
   .ef-hero{ padding:44px 0 80px; }
@@ -473,14 +443,13 @@
   .ef-autor{ grid-template-columns:1fr; gap:48px; }
   .ef-autor__foto{ max-width:420px; margin:0 auto; }
   .ef-autor__pie{ left:-12px; }
-  .ef-creds{ grid-template-columns:1fr; gap:36px; }
   .ef-form-grid{ grid-template-columns:1fr; }
   .ef-form-aside{ display:none; }
 }
 @media (max-width:640px){
   .ef-wrap{ padding:0 20px; }
   .ef-section{ padding:68px 0; }
-  .ef-oscuro, .ef-final{ padding:76px 0; }
+  .ef-final{ padding:68px 0; }
   .ef-header__in{ height:60px; }
   .ef-wordmark{ font-size:12.5px; letter-spacing:.18em; }
   .ef-hero__ctas .ef-btn{ flex:1 1 100%; }
@@ -488,22 +457,29 @@
   .ef-hero__tag{ left:-8px; bottom:24px; max-width:88%; }
   .ef-tag{ font-size:14px; }
   .ef-franja__in{ gap:8px 22px; }
-  .ef-video__play{ width:66px; height:66px; margin:-33px 0 0 -33px; }
-  .ef-video__play svg{ width:24px; height:24px; }
+  .ef-top{ padding-top:14px; }
+  .ef-vsl{ padding:12px 0 40px; }
+  .ef-vsl__pre{ font-size:10.5px; letter-spacing:.14em; margin-bottom:10px; }
+  .ef-vsl__h1{ font-size:clamp(22px,6.3vw,26px); }
+  .ef-vsl__sub{ margin-top:10px; font-size:14.5px; }
+  .ef-vsl__sub-largo{ display:none; }
+  .ef-vsl__video{ width:min(100%, max(260px, calc((100svh - 420px) * 16 / 9))); margin-top:16px; }
+  .ef-cta{ width:100%; margin-top:16px; }
+  .ef-cta .ef-btn{ width:100%; }
+  .ef-section .ef-cta{ margin-top:32px; }
+  .ef-video__play{ top:68%; width:56px; height:56px; margin:-28px 0 0 -28px; box-shadow:0 0 0 8px rgba(255,255,255,.22); }
+  .ef-video__play svg{ width:22px; height:22px; margin-left:4px; }
   .ef-video__rotulo{ left:14px; bottom:14px; }
-  .ef-caso{ padding:28px 22px; margin-top:44px; }
-  .ef-caso__planos{ grid-template-columns:1fr; }
+  .ef-video__dur{ right:10px; top:10px; font-size:11px; }
   .ef-est__body{ padding-left:4px; }
-  .ef-est__planos{ grid-template-columns:1fr; }
   .ef-est__t{ font-size:16.5px; }
   .ef-cifras{ grid-template-columns:1fr; }
   .ef-cifra{ display:flex; align-items:baseline; gap:16px; padding:18px 0 0; }
   .ef-cifra__n{ font-size:36px; min-width:64px; }
   .ef-cifra__t{ margin-top:0; }
-  .ef-creds__list{ grid-template-columns:1fr; }
-  .ef-pasos{ grid-template-columns:1fr; gap:22px; margin:40px 0 52px; }
+  .ef-pasos{ grid-template-columns:1fr; gap:22px; margin:40px 0 0; }
   .ef-card{ padding:28px 20px; }
-  .ef-wiz{ min-height:0; }
+  .ef-wiz, .ef-quiz .ef-wiz{ min-height:0; }
   .ef-wiz__eyebrow{ font-size:11px; letter-spacing:.14em; }
   .ef-wiz__eyebrow::before{ display:none; }
   .ef-options--2{ grid-template-columns:1fr; }
@@ -511,8 +487,10 @@
   .ef-res__est{ padding:20px; }
   .ef-res__recs li{ padding:18px; }
   .ef-grid-2{ grid-template-columns:1fr; }
-  .ef-camino__q{ padding:0 20px; }
-  .ef-footer__legal{ padding-bottom:104px; }
+  .ef-res__paso-t{ font-size:19px; }
+  .ef-quiz{ padding:16px 0 48px; }
+  .ef-agenda{ height:860px; }
+  .ef-pie{ padding-bottom:96px; }
 
   .ef-fija{
     display:block; position:fixed; left:12px; right:12px; bottom:12px; z-index:60;
@@ -525,7 +503,7 @@
 
 /* ── Landing de la formación gratis (/formacion-gratis/) ───────────────── */
 a.ef-wordmark{ text-decoration:none; }
-.ef-pasos--4{ grid-template-columns:repeat(4,1fr); margin-bottom:0; }
+.ef-pasos--4{ grid-template-columns:repeat(4,1fr); }
 .ef-recorre{ list-style:none; margin:28px 0 0; padding:0; display:grid; gap:18px; }
 .ef-recorre li{ border-left:2px solid var(--burdeos); padding:2px 0 2px 18px; }
 .ef-recorre li p:last-child{ margin:6px 0 0; font-size:15.5px; line-height:1.7; color:var(--tinta-2); }
