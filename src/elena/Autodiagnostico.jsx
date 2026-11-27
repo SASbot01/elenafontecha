@@ -142,7 +142,11 @@ export default function Autodiagnostico({ onSalir, destino, origen: origenLandin
   }
 
   const emailOk = RE_EMAIL.test(email.trim())
-  const contactoOk = nombre.trim() && emailOk && (rama !== 'empresa' || empresa.trim()) && consent
+  // El teléfono es obligatorio: el equipo de Elena llama a quien envía el
+  // formulario. Validación tolerante: al menos 9 dígitos, se escriban como se
+  // escriban (con +34, espacios, guiones o prefijo de otro país).
+  const telOk = telefono.replace(/\D/g, '').length >= 9
+  const contactoOk = nombre.trim() && emailOk && telOk && (rama !== 'empresa' || empresa.trim()) && consent
 
   // Lo que falta para enviar, en el orden de los campos. El botón no se
   // desactiva: si falta algo, al pulsarlo se dice qué y el foco va al primer
@@ -151,6 +155,7 @@ export default function Autodiagnostico({ onSalir, destino, origen: origenLandin
     !nombre.trim() && { id: 'ef-nombre', txt: 'tu nombre' },
     rama === 'empresa' && !empresa.trim() && { id: 'ef-empresa', txt: 'el nombre de la empresa' },
     !emailOk && { id: 'ef-email', txt: email.trim() ? 'un correo válido' : 'tu correo' },
+    !telOk && { id: 'ef-tel', txt: telefono.trim() ? 'un teléfono válido' : 'tu teléfono' },
     !consent && { id: 'ef-consent', txt: 'marcar la casilla de privacidad' },
   ].filter(Boolean)
   const falta = (id) => intento && faltan.some((f) => f.id === id)
@@ -390,9 +395,11 @@ export default function Autodiagnostico({ onSalir, destino, origen: origenLandin
                     aria-invalid={falta('ef-email') || undefined} />
                 </div>
                 <div className="ef-field">
-                  <label htmlFor="ef-tel">Teléfono <span className="ef-opc">(opcional)</span></label>
+                  <label htmlFor="ef-tel">Teléfono</label>
                   <input id="ef-tel" className="ef-input" type="tel" autoComplete="tel" inputMode="tel"
-                    value={telefono} onChange={(ev) => setTelefono(ev.target.value)} />
+                    value={telefono} onChange={(ev) => setTelefono(ev.target.value)} required
+                    aria-invalid={falta('ef-tel') || undefined} aria-describedby="ef-tel-ayuda" />
+                  <p className="ef-field__ayuda" id="ef-tel-ayuda">El equipo de Elena te llamará a este número.</p>
                 </div>
               </div>
             </div>

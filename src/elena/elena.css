@@ -298,7 +298,6 @@
 .ef-q{ margin:0 0 30px; border:0; padding:0; min-inline-size:0; }
 .ef-q__label{ display:block; width:100%; padding:0; font-weight:600; font-size:16px; line-height:1.45; color:var(--tinta); margin:0 0 14px; }
 .ef-q__n{ color:var(--burdeos); font-weight:700; font-size:13px; letter-spacing:.06em; margin-right:12px; }
-.ef-opc{ color:var(--apagado); font-weight:400; }
 
 /* Asistente: una pregunta por pantalla */
 .ef-wiz{ min-height:600px; }
@@ -350,6 +349,7 @@
 .ef-datos{ margin-top:8px; padding-top:28px; border-top:1px solid var(--linea); display:grid; gap:18px; }
 .ef-datos .ef-mini{ margin:0; }
 .ef-field label{ display:block; font-weight:600; font-size:13.5px; color:var(--tinta); margin:0 0 7px; }
+.ef-field__ayuda{ margin:7px 0 0; font-size:12.5px; line-height:1.45; color:var(--apagado); }
 .ef-input{
   width:100%; font-family:inherit; font-size:15.5px; color:var(--tinta);
   background:var(--papel); border:1px solid var(--linea-2); border-radius:2px;

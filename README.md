@@ -80,6 +80,8 @@ El autodiagnóstico envía un `POST` a `https://helm.s4sf.net/api/formularios` c
 | «Para mí» | `valor` | Funnel 1 / Lead · persona |
 | «Para mi equipo o mi empresa» | `valor-empresa` | Funnel 1 / Lead · empresa |
 
+Nombre, correo y **teléfono** son obligatorios (el teléfono, con al menos 9 dígitos, se escriba como se escriba): el equipo de Elena llama a quien envía el formulario.
+
 Etapas de «Funnel 1»: Lead · persona · Lead · empresa → En nutrición → Conversación reservada → Propuesta → Cliente / Descartado.
 
 Cada lead llega con su **perfil** calculado:
