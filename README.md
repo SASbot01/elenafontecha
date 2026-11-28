@@ -43,11 +43,31 @@ Es una web estática (Vite + React): se despliega tal cual en Vercel, sin variab
 | Estilos (burdeos `#4F1828`, Montserrat) | `src/elena/elena.css` |
 | Fotos | `public/elena/` |
 | El vídeo y su póster | `public/video/` |
-| Imagen al compartir y dominio | `public/og.jpg` y `VITE_SITE_URL` en `.env` |
+| Imagen al compartir y dominio | `public/og.jpg`, `VITE_SITE_URL` en `.env`, `public/robots.txt` y `public/sitemap.xml` |
+| Las páginas legales | `legales/<página>/index.html` (texto) y `src/elena/legal.css` (maqueta) |
+| Redirecciones de la web anterior | `vercel.json` |
 
 **Marca de Elena:** burdeos `#4F1828`, Montserrat, fondo blanco y tono editorial anti-autoayuda.
 
 **Palabras prohibidas**, que no deben aparecer nunca: transformación, empoderamiento, potencial, reinvención, mejor versión, despertar, difuso, «por inercia», «ha dejado de elegir» y «herramientas» como etiqueta. Tampoco se usan testimonios hasta tener su permiso.
+
+## El dominio
+
+La web se sirve en **elenafontecha.com**. El dominio va escrito en tres sitios, que tienen que ir a juego: `VITE_SITE_URL` en `.env` (vista previa al compartir y dirección canónica de las páginas legales), `public/robots.txt` y `public/sitemap.xml`.
+
+## Las páginas legales
+
+En las mismas rutas que tenía la web anterior de Elena, para que no se rompa ningún enlace:
+
+- `/legales/politica-privacidad` — a la que lleva la casilla de consentimiento del formulario (`PRIVACIDAD` en `src/elena/contenido.js`).
+- `/legales/aviso-legal`
+- `/legales/politica-cookies`
+
+Son HTML sin JavaScript (`legales/<página>/index.html`), con la maqueta de la marca (`src/elena/legal.css`). **El texto es el de la web anterior, tal cual: es texto legal de Elena y aquí no se redacta.** Si hay que cambiarlo, se cambia en esos archivos con el texto que ella dé. No llevan menú: su único enlace propio es el de volver al inicio. Y el pie de la landing sigue sin enlazarlas (regla del embudo).
+
+## Redirecciones de la web anterior
+
+Las páginas de la web anterior que ya no existen (`/como-trabajo`, `/mi-trayectoria`, `/testimonios` y `/contactame`) redirigen al inicio. Están en `vercel.json` y son **temporales** (307, `"permanent": false`): si alguna vuelve, se quita su línea y los buscadores no habrán dado el cambio por definitivo. Solo actúan en Vercel; en local (`npm run dev`) no se aplican.
 
 ## El lead magnet
 
@@ -105,5 +125,4 @@ Los dos formularios **ya están creados en producción** con las preguntas actua
 ## Pendiente
 
 - **El lead magnet:** falta el archivo. Al tenerlo, rellenar `LEAD_MAGNET` (ver arriba).
-- Ajustar `VITE_SITE_URL` al dominio definitivo.
 - Medición: no hay píxel. Al ponerlo, los eventos van en la carga (vista), el envío del autodiagnóstico (lead) y la reserva en Calendly (`calendly.event_scheduled`, que ya se escucha en `Autodiagnostico.jsx`).

@@ -60,7 +60,9 @@ export const REDES = [
   { nombre: 'TikTok', url: 'https://www.tiktok.com/@elenafontechaoficial' },
   { nombre: 'elenafontecha.com', url: 'https://elenafontecha.com' },
 ]
-export const PRIVACIDAD = 'https://elenafontecha.com/legales/politica-privacidad'
+// La política de privacidad vive en esta misma web (legales/politica-privacidad/).
+// Es el enlace de la casilla de consentimiento del formulario.
+export const PRIVACIDAD = '/legales/politica-privacidad/'
 
 export const PREGUNTA_GANCHO = '¿Sigo queriendo la vida que estoy construyendo con mi manera de vivir y de actuar?'
 

@@ -1,0 +1,8 @@
+{
+  "redirects": [
+    { "source": "/como-trabajo", "destination": "/", "permanent": false },
+    { "source": "/mi-trayectoria", "destination": "/", "permanent": false },
+    { "source": "/testimonios", "destination": "/", "permanent": false },
+    { "source": "/contactame", "destination": "/", "permanent": false }
+  ]
+}

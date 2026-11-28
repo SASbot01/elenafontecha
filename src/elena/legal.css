@@ -1,0 +1,40 @@
+/* Páginas legales (/legales/…): el texto de la web anterior de Elena con la
+ * maqueta de la marca. Son HTML sin JavaScript. Sin menú: el único enlace de
+ * la página es el de volver al inicio (los que lleva el propio texto legal se
+ * conservan). */
+@import url('../fonts/montserrat.css');
+
+:root{
+  --burdeos:#4F1828; --tinta:#1E1618; --tinta-2:#5A4D51; --linea:#ECE2E4;
+}
+*{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:#fff; color:var(--tinta);
+  font-family:'Montserrat',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  font-size:16px; line-height:1.7; -webkit-font-smoothing:antialiased;
+}
+.ef-legal{ max-width:780px; margin:0 auto; padding:0 24px; }
+.ef-legal__top{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px;
+  padding:22px 0; border-bottom:1px solid var(--linea);
+}
+.ef-legal__marca{ font-weight:600; letter-spacing:.22em; text-transform:uppercase; font-size:13px; color:var(--burdeos); }
+.ef-legal__volver{ font-size:13.5px; font-weight:600; color:var(--burdeos); text-decoration:none; }
+.ef-legal__volver:hover{ text-decoration:underline; text-underline-offset:3px; }
+.ef-legal :focus-visible{ outline:2px solid var(--burdeos); outline-offset:3px; }
+
+.ef-legal__doc{ padding:44px 0 36px; overflow-wrap:anywhere; }
+.ef-legal__doc h1{ margin:0 0 26px; font-weight:300; font-size:clamp(30px,5vw,42px); line-height:1.12; letter-spacing:-0.025em; }
+.ef-legal__doc h2{
+  margin:36px 0 12px; padding-top:22px; border-top:1px solid var(--linea);
+  font-size:13px; font-weight:700; line-height:1.5; letter-spacing:.14em; text-transform:uppercase; color:var(--burdeos);
+}
+.ef-legal__doc p, .ef-legal__doc li{ font-size:15.5px; color:var(--tinta-2); }
+.ef-legal__doc p{ margin:0 0 14px; }
+.ef-legal__doc ul, .ef-legal__doc ol{ margin:0 0 14px; padding-left:22px; }
+.ef-legal__doc li{ margin:0 0 6px; }
+.ef-legal__doc strong{ font-weight:600; color:var(--tinta); }
+.ef-legal__doc a{ color:var(--burdeos); text-underline-offset:2px; }
+
+.ef-legal__pie{ padding:22px 0 44px; border-top:1px solid var(--linea); }
